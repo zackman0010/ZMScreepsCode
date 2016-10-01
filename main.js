@@ -51,23 +51,37 @@ module.exports.loop = function ()
 	
     if(harvesters.length < 3 && spawn.canCreateCreep([WORK,CARRY,MOVE]) == OK && (maxenergy < 550 || !(bigharvesters.length > 1)))
 	{
-		//If there are fewer than three harvesters, 1 or fewer big harvesters, ...wait I'm confused. ZACK PLS HELP
+		/*
+		Requirements to run:
+		-Fewer than 3 basic harvesters already exist
+		-Spawn has enough energy to create basic harvester
+		-Max energy available is less than 550 OR less than 1 big harvester already exist
+		*/
         var newName = spawn.createCreep([WORK,CARRY,MOVE], undefined, {role: 'harvester'});
         console.log('Spawning new harvester: ' + newName);
 		spawn.memory.saving = false;
     }
 	else if(harvesters.length < 3 && spawn.canCreateCreep([WORK,CARRY,MOVE]) == ERR_NOT_ENOUGH_ENERGY && (maxenergy < 550 || !(bigharvesters.length > 1)))
 	{
+		//If previous statement fails due to not having enough energy, set the spawn to save energy
 		spawn.memory.saving = true;
 	}
 	else if(maxenergy >= 550 && bigharvesters.length < 3 && spawn.canCreateCreep([WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]) == OK)
 	{
+		/*
+		Requirements to run:
+		-Max energy available is greater than 550
+		-Both basic harvester checks failed
+		-Fewer than 3 big harvesters already exist
+		-Spawn has enough energy to create big harvester
+		*/
 		var newName = spawn.createCreep([WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE], undefined, {role: 'bigharvester'});
 		console.log('Spawning new big harvester: ' + newName);
 		spawn.memory.saving = false;
 	}
 	else if(maxenergy >= 550 && bigharvesters.length < 3 && spawn.canCreateCreep([WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]))
 	{
+		//If previous statement fails due to not having enough energy, set the spawn to save energy
 		spawn.memory.saving = true;
 	}
 	else if(upgraders.length < 3 && spawn.canCreateCreep([WORK,CARRY,MOVE]) == OK)
