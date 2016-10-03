@@ -5,7 +5,7 @@ var roleHarvester =
 	{
 		//Set variable array for all energy sources in room
 		var sources = creep.room.find(FIND_SOURCES);
-		var sourceFlags = creep.room.memory.sources;
+		var sourceFlags = creep.room.memory.sourceFlags;
 		
 		if(!creep.memory.collecting && creep.carry.energy == 0)
 		{
@@ -13,11 +13,12 @@ var roleHarvester =
             creep.memory.collecting = true;
 			if(creep.memory.harvestingFrom == null)
 			{
-				for(var x = 0;x < sources.length;x++)
+				for(var x = 0;x < sourceFlags.length;x++)
 				{
-					if(creep.room.memory.sources[x].availHarvest > creep.room.memory.sources[x].actHarvest)
+					if(sourceFlags[x].memory.availHarvest > sourceFlags[x].memory.actHarvest)
 					{
 						creep.memory.harvestingFrom = x;
+						sourceFlags[x].memory.actHarvest++;
 						break;
 					}
 				}

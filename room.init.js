@@ -6,18 +6,18 @@ var roomInit =
 		var sources = spawn.room.find(FIND_SOURCES);
 		
 		//Set variable array within room memory for all energy sources in room
-		spawn.room.memory.sources = [];
+		spawn.room.memory.sourceFlags = [];
 		for(var x = 0;x < sources.length;x++)
 		{
 			//For each energy source in room, create a flag and add it to the room memory array
-			spawn.room.memory.sources.push(sources[x].pos.createFlag('Source' + x.toString()));
+			spawn.room.memory.sourceFlags.push(sources[x].pos.createFlag('Source' + x.toString()));
 		}
 		
 		//Set variable array within room memory for total tiles in room that can be harvested from
 		spawn.room.memory.totalHarvest = 0;
 		
 		//Loop through all sources in room to determine harvestable tiles for each
-		for(var source in spawn.room.memory.sources)
+		for(var source in spawn.room.memory.sourceFlags)
 		{
 			//Create and initialize variable for number of tiles around the source that can be harvested from
 			source.memory.availHarvest = 0;
