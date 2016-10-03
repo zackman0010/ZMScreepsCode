@@ -57,12 +57,40 @@ module.exports.loop = function ()
 	//Set variable for max energy in room (300 from spawn, 50 from each extension)
 	var maxenergy = 300 + (50 * extensions.length);
 	
+	//Set variable array for all energy sources in room
+	var sources = spawn.room.find(FIND_SOURCES);
+	//Set variable for total number of harvestable tiles
+	var totalHarvest = 0;
+	//Loop through all sources in room to determine harvestable tiles for each
+	for(var source in sources)
+	{
+		//Create and initialize variable for number of tiles around the source that can be harvested from
+		source.memory.availHarvest = 0;
+		
+		//Loop through the tiles within a 1-tile radius of the source.
+		for(var i = (source.pos.x)-1;i <= (source.pos.x)+1;i++)
+		{
+			for(var j = (source.pos.y)-1;j <= (source.pos.y)+1;j++)
+			{
+				if(getTerrainAt(i,j,spawn.room.name) == "plain" || getTerrainAt(i,j,spawn.room.name) == "swamp")
+				{
+					//If the tile being checked is walkable terrain (plain or swamp), increment the number of tiles that can be harvested from.
+					source.memory.availHarvest++;
+				}
+			}
+		}
+		//Add this source's harvestable tiles to the total number
+		totalHarvest += source.memory.availHarvest;
+	}
+	
 	//Set variable array for each Creep role
 	var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
 	var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
 	var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
 	var bigharvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'bigharvester');
 	
+	//Miles note: total harvesters created should probably be equal to totalHarvest, so add that into your calculations. I haven't updated them here because I know you're planning on doing a total rehaul.
+	//Miles note: would it be possible to run the code so that bigharvesters get activated before normal harvesters? It'd be nice in cases of memory for the more important harvesters to work first.
     if(harvesters.length < 3 && spawn.canCreateCreep([WORK,CARRY,MOVE]) == OK && (maxenergy < 550 || !(bigharvesters.length > 1)))
 	{
 		/*
