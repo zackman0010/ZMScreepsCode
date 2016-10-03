@@ -57,8 +57,8 @@ module.exports.loop = function ()
 					if (spawn.createCreep(current.body, current.name, {role: current.type}) == ERR_NOT_ENOUGH_ENERGY) {
 						spawn.memory.saving = true;
 					}
+					break;
 				}
-				break;
 			}
 		}
 	} else {
