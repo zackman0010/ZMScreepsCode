@@ -1,6 +1,7 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roomInit = require('room.init');
 
 module.exports.loop = function ()
 {
@@ -16,6 +17,10 @@ module.exports.loop = function ()
 	//Set variable for used spawner
 	//Miles note: This'll need to be changed when one or both of us starts using multiple spawns, probably "for(var spawn in Game.spawns)"
 	var spawn = Game.spawns['Spawn1'];
+	
+	//If room has not been initialized, run the room initializer
+	//Miles note: Modify this once we fix code to run via room instead of a single spawner
+	if(spawn.room.memory.initialized == null) roomInit.run(spawn);
 	
 	//Set variable array for all towers in spawn's room
 	var towers = spawn.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
@@ -56,32 +61,6 @@ module.exports.loop = function ()
 	var extensions = spawn.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_EXTENSION)}});
 	//Set variable for max energy in room (300 from spawn, 50 from each extension)
 	var maxenergy = 300 + (50 * extensions.length);
-	
-	//Set variable array for all energy sources in room
-	var sources = spawn.room.find(FIND_SOURCES);
-	//Set variable for total number of harvestable tiles
-	var totalHarvest = 0;
-	//Loop through all sources in room to determine harvestable tiles for each
-	for(var source in sources)
-	{
-		//Create and initialize variable for number of tiles around the source that can be harvested from
-		source.memory.availHarvest = 0;
-		
-		//Loop through the tiles within a 1-tile radius of the source.
-		for(var i = (source.pos.x)-1;i <= (source.pos.x)+1;i++)
-		{
-			for(var j = (source.pos.y)-1;j <= (source.pos.y)+1;j++)
-			{
-				if(getTerrainAt(i,j,spawn.room.name) == "plain" || getTerrainAt(i,j,spawn.room.name) == "swamp")
-				{
-					//If the tile being checked is walkable terrain (plain or swamp), increment the number of tiles that can be harvested from.
-					source.memory.availHarvest++;
-				}
-			}
-		}
-		//Add this source's harvestable tiles to the total number
-		totalHarvest += source.memory.availHarvest;
-	}
 	
 	//Set variable array for each Creep role
 	var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');

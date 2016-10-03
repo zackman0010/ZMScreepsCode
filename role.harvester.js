@@ -4,31 +4,8 @@ var roleHarvester =
     run: function(creep)
 	{
 		//Set variable array for all energy sources in room
-		var sources = spawn.room.find(FIND_SOURCES);
-		//Loop through all sources in room to determine harvestable tiles for each
-		for(var source in sources)
-		{
-			if(source.availHarvest == null)
-			{
-				//Create and initialize variable for number of tiles around the source that can be harvested from
-				source.availHarvest = 0;
-				//Create and initialize variable for number of creeps currently harvesting from the source
-				source.actHarvest = 0;
-				
-				//Loop through the tiles within a 1-tile radius of the source.
-				for(var i = (source.pos.x)-1;i <= (source.pos.x)+1;i++)
-				{
-					for(var j = (source.pos.y)-1;j <= (source.pos.y)+1;j++)
-					{
-						if(getTerrainAt(i,j,spawn.room.name) == "plain" || getTerrainAt(i,j,spawn.room.name) == "swamp")
-						{
-							//If the tile being checked is walkable terrain (plain or swamp), increment the number of tiles that can be harvested from.
-							source.availHarvest++;
-						}
-					}
-				}
-			}
-		}
+		var sources = creep.room.find(FIND_SOURCES);
+		var sourceFlags = creep.room.memory.sources;
 		
 		if(!creep.memory.collecting && creep.carry.energy == 0)
 		{
@@ -38,7 +15,7 @@ var roleHarvester =
 			{
 				for(var x = 0;x < sources.length;x++)
 				{
-					if(sources[x].availHarvest > sources[x].actHarvest)
+					if(creep.room.memory.sources[x].availHarvest > creep.room.memory.sources[x].actHarvest)
 					{
 						creep.memory.harvestingFrom = x;
 						break;
