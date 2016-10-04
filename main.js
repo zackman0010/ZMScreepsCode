@@ -19,13 +19,13 @@ module.exports.loop = function ()
 		
 		//If room has not been initialized, run the room initializer
 		//Miles note: Modify this once we fix code to run via room instead of a single spawner
-		if(spawn.room.memory.initialize2) roomInit.second(spawn);
-		if(!spawn.room.memory.initialized1) roomInit.first(spawn);
+		if(room.memory.initialize2) roomInit.second(room);
+		if(!room.memory.initialized1) roomInit.first(room);
 		
-		if(spawn.room.memory.initialized1 && !spawn.room.memory.initialize2)
+		if(room.memory.initialized1 && !room.memory.initialize2)
 		{
 			//Set variable array for all towers in spawn's room
-			var towers = spawn.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
+			var towers = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
 			if (towers.length > 0)
 			{
 				//For each tower:
@@ -59,7 +59,7 @@ module.exports.loop = function ()
 				}
 			}
 			//Set variable array for all Extensions in room
-			var extensions = spawn.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_EXTENSION)}});
+			var extensions = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_EXTENSION)}});
 			//Set variable for max energy in room (300 from spawn, 50 from each extension)
 			var totalenergy = 300 + (50 * extensions.length);
 			
