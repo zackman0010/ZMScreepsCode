@@ -20,7 +20,8 @@ module.exports.loop = function ()
 	
 	//If room has not been initialized, run the room initializer
 	//Miles note: Modify this once we fix code to run via room instead of a single spawner
-	if(!spawn.room.memory.initialized) roomInit.run(spawn);
+	if(spawn.room.memory.initialize2) roomInit.second(spawn);
+	if(!spawn.room.memory.initialized1) roomInit.first(spawn);
 	
 	//Set variable array for all towers in spawn's room
 	var towers = spawn.room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
