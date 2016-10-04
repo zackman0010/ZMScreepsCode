@@ -11,17 +11,14 @@ var roleHarvester =
 		{
 			//If the creep is not collecting energy and has no energy, set the collecting flag
             creep.memory.collecting = true;
-			if(creep.memory.harvestingFrom == null)
+			for(var x = 0;x < sourceFlags.length;x++)
 			{
-				for(var x = 0;x < sourceFlags.length;x++)
+				var source = Game.flags[sourceFlags[x]];
+				if(source.memory.availHarvest > source.memory.actHarvest)
 				{
-					var source = Game.flags[sourceFlags[x]];
-					if(source.memory.availHarvest > source.memory.actHarvest)
-					{
-						creep.memory.harvestingFrom = x;
-						source.memory.actHarvest++;
-						break;
-					}
+					creep.memory.harvestingFrom = x;
+					source.memory.actHarvest++;
+					break;
 				}
 			}
 	    }
@@ -29,6 +26,9 @@ var roleHarvester =
 		{
 			//If the creep is collecting energy and has full energy, remove the collecting flag
 	        creep.memory.collecting	= false;
+			var source = Game.flags[sourceFlags[creep.memory.harvestingFrom]];
+			creep.memory.harvestingFrom = null;
+			source.memory.actHarvest--;
 	    }
 		
 	    if(creep.memory.collecting)
