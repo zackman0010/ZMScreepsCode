@@ -29,7 +29,7 @@ var roomInit =
 		spawn.room.memory.initialized1 = true;
 		//Set second initialize flag to signal the need for the second initializer to run.
 		spawn.room.memory.initialize2 = true;
-	}
+	},
 	
 	second: function(spawn)
 	{
