@@ -10,17 +10,23 @@ var roomInit =
 		for(var x = 0;x < sources.length;x++)
 		{
 			//For each energy source in room, create a flag and add it to the room memory array
-			spawn.room.memory.sourceFlags.push(sources[x].pos.createFlag('Source' + x.toString()));
+			var flagname = sources[x].pos.createFlag('SourceFlag' + x.toString())
+			if (flagname == -3) {
+				//For some unknown reason, the above command is returning -3 (ERR_NAME_EXISTS) on every call. This workaround makes the rest of the code work.
+				flagname = 'SourceFlag' + x.toString();
+			}
+			spawn.room.memory.sourceFlags.push(flagname);
 		}
 		
 		//Set variable array within room memory for total tiles in room that can be harvested from
 		spawn.room.memory.totalHarvest = 0;
 		
 		//Loop through all sources in room to determine harvestable tiles for each
-		for(var source in spawn.room.memory.sourceFlags)
+		for(var sourcename in spawn.room.memory.sourceFlags)
 		{
+			var source = Game.flags[sourcename];
 			//Create and initialize variable for number of tiles around the source that can be harvested from
-			source.memory.availHarvest = 0;
+			Game.flags[sourcename]source.memory.availHarvest = 0;
 			source.memory.actHarvest = 0;
 			
 			//Loop through the tiles within a 1-tile radius of the source.

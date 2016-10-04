@@ -15,10 +15,11 @@ var roleHarvester =
 			{
 				for(var x = 0;x < sourceFlags.length;x++)
 				{
-					if(sourceFlags[x].memory.availHarvest > sourceFlags[x].memory.actHarvest)
+					var source = Game.flags[sourceFlags[x]];
+					if(source[x].memory.availHarvest > sourceFlags[x].memory.actHarvest)
 					{
 						creep.memory.harvestingFrom = x;
-						sourceFlags[x].memory.actHarvest++;
+						source[x].memory.actHarvest++;
 						break;
 					}
 				}
