@@ -13,16 +13,11 @@ module.exports.loop = function ()
 	}
 	for(room in myRooms)
 	{
-		//Set variable for used spawner
-		//Miles note: This'll need to be changed when one or both of us starts using multiple spawns, probably "for(var spawn in Game.spawns)"
-		var spawn = Game.spawns['Spawn1'];
-		
 		//If room has not been initialized, run the room initializer
 		//Miles note: Modify this once we fix code to run via room instead of a single spawner
-		if(room.memory.initialize2) roomInit.second(room);
 		if(!room.memory.initialized1) roomInit.first(room);
-		
-		if(room.memory.initialized1 && !room.memory.initialize2)
+		else if(room.memory.initialize2) roomInit.second(room);
+		else if(room.memory.initialized1 && !room.memory.initialize2)
 		{
 			//Set variable array for all towers in spawn's room
 			var towers = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
@@ -58,25 +53,35 @@ module.exports.loop = function ()
 					}
 				}
 			}
-			//Set variable array for all Extensions in room
-			var extensions = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_EXTENSION)}});
-			//Set variable for max energy in room (300 from spawn, 50 from each extension)
-			var totalenergy = 300 + (50 * extensions.length);
+			//Set variable array for all Spawns in room
+			var spawns = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
+			//Set variable for max energy in room (300 from each spawn, 50 from each extension)
+			var totalenergy = room.energyCapacityAvailable;
 			
-			if (spawn.spawning == null) {
-				for(var i = 1; i <= respawner.length; i++) {
-					var current = respawner[i.toString()];
-					if (!Game.creeps[current.name]) {
-						if (totalenergy >= current.minenergy && totalenergy < current.maxenergy) {
-							if (spawn.createCreep(current.body, current.name, {role: current.type}) == ERR_NOT_ENOUGH_ENERGY) {
-								spawn.memory.saving = true;
+			for(spawn in spawns)
+			{
+				if (spawn.spawning == null)
+				{
+					for(var i = 1; i <= respawner.length; i++)
+					{
+						var current = respawner[i.toString()];
+						if (!Game.creeps[current.name])
+						{
+							if (totalenergy >= current.minenergy && totalenergy < current.maxenergy)
+							{
+								if (spawn.createCreep(current.body, current.name, {role: current.type}) == ERR_NOT_ENOUGH_ENERGY)
+								{
+									room.memory.saving = true;
+								}
+								break;
 							}
-							break;
 						}
 					}
 				}
-			} else {
-				spawn.memory.saving = false;
+				else
+				{
+					room.memory.saving = false;
+				}
 			}
 
 			for(var name in Game.creeps)
@@ -90,17 +95,22 @@ module.exports.loop = function ()
 					//If creep is a Harvester or Big Harvester, run the Harvester role
 					roleHarvester.run(creep);
 				}
-				if(creep.memory.role == 'upgrader' && (!spawn.memory.saving || creep.energy > 0))
+				if(creep.memory.role == 'upgrader' && (!room.memory.saving || creep.energy > 0))
 				{
-					//If creep is an Upgrader AND the spawn is not saving OR the creep has stored energy, run the Upgrader role
+					//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
 					roleUpgrader.run(creep);
 				}
-				if(creep.memory.role == 'builder' && (!spawn.memory.saving || creep.energy > 0))
+				if(creep.memory.role == 'builder' && (!room.memory.saving || creep.energy > 0))
 				{
-					//If creep is a Builder AND the spawn is not saving OR the creep has stored energy, run the Builder role
+					//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
 					roleBuilder.run(creep);
 				}
 			}
+		}
+		else
+		{
+			console.log("An error has occurred: Rooms not initialized properly.");
+			break;
 		}
 	}
 }
