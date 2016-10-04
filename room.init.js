@@ -1,7 +1,7 @@
 var roomInit = 
 {
 	//NOTE TO SELF IN CASE I FORGET: To fix this bug, split into two inits because items created don't actually exist until the second tick.
-	'first': function(spawn)
+	first: function(spawn)
 	{
 		//Set variable array for all energy sources in room
 		var sources = spawn.room.find(FIND_SOURCES);
@@ -31,7 +31,7 @@ var roomInit =
 		spawn.room.memory.initialize2 = true;
 	},
 	
-	'second': function(spawn)
+	second: function(spawn)
 	{
 		//Loop through all sources in room to determine harvestable tiles for each
 		for(var sourceindex in spawn.room.memory.sourceFlags)
@@ -46,7 +46,7 @@ var roomInit =
 			{
 				for(var j = (source.pos.y)-1;j <= (source.pos.y)+1;j++)
 				{
-					if(getTerrainAt(i,j,spawn.room.name) == "plain" || getTerrainAt(i,j,spawn.room.name) == "swamp")
+					if(Game.map.getTerrainAt(i,j,spawn.room.name) == "plain" || Game.map.getTerrainAt(i,j,spawn.room.name) == "swamp")
 					{
 						//If the tile being checked is walkable terrain (plain or swamp), increment the number of tiles that can be harvested from.
 						source.memory.availHarvest++;
