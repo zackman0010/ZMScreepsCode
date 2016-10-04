@@ -7,20 +7,20 @@ var respawner = require('respawner');
 module.exports.loop = function ()
 {
 	var myRooms = [];
-	for(room in Game.rooms)
+	for(var thisRoom in Game.rooms.Room)
 	{
-		if(room.controller.my) myRooms.push(room);
+		if(thisRoom.controller.my) myRooms.push(thisRoom);
 	}
-	for(room in myRooms)
+	for(var thisRoom in myRooms)
 	{
 		//If room has not been initialized, run the room initializer
 		//Miles note: Modify this once we fix code to run via room instead of a single spawner
-		if(!room.memory.initialized1) roomInit.first(room);
-		else if(room.memory.initialize2) roomInit.second(room);
-		else if(room.memory.initialized1 && !room.memory.initialize2)
+		if(!thisRoom.memory.initialized1) roomInit.first(thisRoom);
+		else if(thisRoom.memory.initialize2) roomInit.second(thisRoom);
+		else if(thisRoom.memory.initialized1 && !thisRoom.memory.initialize2)
 		{
 			//Set variable array for all towers in spawn's room
-			var towers = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
+			var towers = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
 			if (towers.length > 0)
 			{
 				//For each tower:
@@ -54,11 +54,11 @@ module.exports.loop = function ()
 				}
 			}
 			//Set variable array for all Spawns in room
-			var spawns = room.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
+			var spawns = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
 			//Set variable for max energy in room (300 from each spawn, 50 from each extension)
-			var totalenergy = room.energyCapacityAvailable;
+			var totalenergy = thisRoom.energyCapacityAvailable;
 			
-			for(spawn in spawns)
+			for(var spawn in spawns)
 			{
 				if (spawn.spawning == null)
 				{
@@ -71,7 +71,7 @@ module.exports.loop = function ()
 							{
 								if (spawn.createCreep(current.body, current.name, {role: current.type}) == ERR_NOT_ENOUGH_ENERGY)
 								{
-									room.memory.saving = true;
+									thisRoom.memory.saving = true;
 								}
 								break;
 							}
@@ -80,7 +80,7 @@ module.exports.loop = function ()
 				}
 				else
 				{
-					room.memory.saving = false;
+					thisRoom.memory.saving = false;
 				}
 			}
 
@@ -95,12 +95,12 @@ module.exports.loop = function ()
 					//If creep is a Harvester or Big Harvester, run the Harvester role
 					roleHarvester.run(creep);
 				}
-				if(creep.memory.role == 'upgrader' && (!room.memory.saving || creep.energy > 0))
+				if(creep.memory.role == 'upgrader' && (!thisRoom.memory.saving || creep.energy > 0))
 				{
 					//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
 					roleUpgrader.run(creep);
 				}
-				if(creep.memory.role == 'builder' && (!room.memory.saving || creep.energy > 0))
+				if(creep.memory.role == 'builder' && (!thisRoom.memory.saving || creep.energy > 0))
 				{
 					//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
 					roleBuilder.run(creep);
