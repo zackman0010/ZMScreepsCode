@@ -7,12 +7,13 @@ var respawner = require('respawner');
 module.exports.loop = function ()
 {
 	var myRooms = [];
-	for(var thisRoom in Game.rooms.Room)
+	for(var thisRoomind in Game.rooms)
 	{
-		if(thisRoom.controller.my) myRooms.push(thisRoom);
+		if(Game.rooms[thisRoomind].controller.my) myRooms.push(Game.rooms[thisRoomind]);
 	}
-	for(var thisRoom in myRooms)
+	for(var thisRoomind in myRooms)
 	{
+		var thisRoom = myRooms[thisRoomind];
 		//If room has not been initialized, run the room initializer
 		//Miles note: Modify this once we fix code to run via room instead of a single spawner
 		if(!thisRoom.memory.initialized1) roomInit.first(thisRoom);
