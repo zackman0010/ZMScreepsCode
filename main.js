@@ -85,34 +85,33 @@ module.exports.loop = function ()
 					thisRoom.memory.saving = false;
 				}
 			}
-
-			for(var name in Game.creeps)
-			{
-				//For each creep in existence:
-				//Set variable creep for current creep
-				var creep = Game.creeps[name];
-				
-				if(creep.memory.role == 'harvester' || creep.memory.role == 'bigharvester')
-				{
-					//If creep is a Harvester or Big Harvester, run the Harvester role
-					roleHarvester.run(creep);
-				}
-				if(creep.memory.role == 'upgrader' && (!thisRoom.memory.saving || creep.energy > 0))
-				{
-					//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
-					roleUpgrader.run(creep);
-				}
-				if(creep.memory.role == 'builder' && (!thisRoom.memory.saving || creep.energy > 0))
-				{
-					//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
-					roleBuilder.run(creep);
-				}
-			}
 		}
 		else
 		{
 			console.log("An error has occurred: Rooms not initialized properly.");
 			break;
+		}
+	}
+	for(var name in Game.creeps)
+	{
+		//For each creep in existence:
+		//Set variable creep for current creep
+		var creep = Game.creeps[name];
+		
+		if(creep.memory.role == 'harvester' || creep.memory.role == 'bigharvester')
+		{
+			//If creep is a Harvester or Big Harvester, run the Harvester role
+			roleHarvester.run(creep);
+		}
+		if(creep.memory.role == 'upgrader' && (creep.upgrading || !creep.room.memory.saving))
+		{
+			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
+			roleUpgrader.run(creep);
+		}
+		if(creep.memory.role == 'builder' && (creep.building || !creep.room.memory.saving))
+		{
+			//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
+			roleBuilder.run(creep);
 		}
 	}
 }
