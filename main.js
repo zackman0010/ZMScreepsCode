@@ -58,33 +58,53 @@ module.exports.loop = function ()
 			}
 			//Set variable array for all Spawns in room
 			var spawns = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
+			var spawnbusy = [false, false, false]; //Required so that spawn is only given one order per tick
 			//Set variable for max energy in room (300 from each spawn, 50 from each extension)
 			var totalenergy = thisRoom.energyCapacityAvailable;
 			
-			for(var spawnind in spawns)
+			for(var i = 1; i <= respawner.length; i++)
 			{
-				var spawn = spawns[spawnind]
-				if (spawn.spawning == null)
+				var current = respawner[i.toString()];
+				if (!Game.creeps[current.name])
 				{
-					for(var i = 1; i <= respawner.length; i++)
+					var creepmem = {};
+					if (!Memory.creeps[current.name]) {
+						creepmem = {role: current.type};
+					} else {
+						creepmem = Memory.creeps[current.name];
+					}
+					if (totalenergy >= current.minenergy && totalenergy < current.maxenergy)
 					{
-						var current = respawner[i.toString()];
-						if (!Game.creeps[current.name])
-						{
-							if (totalenergy >= current.minenergy && totalenergy < current.maxenergy)
+						var breakloop = false;
+						var allbusy = false;
+						for (var spawnind in spawns) {
+							var spawn = spawns[spawnind];
+							if (!spawnbusy[spawnind]) {
+								var result = spawn.createCreep(current.body, current.name, creepmem);
+							} else {
+								var result = ERR_BUSY;
+							}
+							
+							if (result == ERR_NOT_ENOUGH_ENERGY)
 							{
-								if (spawn.createCreep(current.body, current.name, {role: current.type}) == ERR_NOT_ENOUGH_ENERGY)
-								{
-									thisRoom.memory.saving = true;
-								}
+								thisRoom.memory.saving = true;
+								allbusy = false
+								breakloop = true;
+								break;
+							} else if (result == ERR_BUSY) {
+								allbusy = true;
+								continue;
+							} else {
+								thisRoom.memory.saving = false;
+								spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
+								allbusy = false;
 								break;
 							}
 						}
+						if (breakloop || allbusy) {
+							break;
+						}
 					}
-				}
-				else
-				{
-					thisRoom.memory.saving = false;
 				}
 			}
 		}
