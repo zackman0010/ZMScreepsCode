@@ -59,8 +59,9 @@ module.exports.loop = function ()
 			//Set variable for max energy in room (300 from each spawn, 50 from each extension)
 			var totalenergy = thisRoom.energyCapacityAvailable;
 			
-			for(var spawn in spawns)
+			for(var spawnind in spawns)
 			{
+				var spawn = spawns[spawnind]
 				if (spawn.spawning == null)
 				{
 					for(var i = 1; i <= respawner.length; i++)
