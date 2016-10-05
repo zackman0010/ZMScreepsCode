@@ -64,15 +64,6 @@ var roleHarvester =
                     creep.moveTo(targets[0]);
                 }
             }
-			else
-			{
-				//If there are no targets to transfer energy to:
-				if(creep.harvest(sources[creep.memory.harvestingFrom]) != ERR_NOT_IN_RANGE)
-				{
-					//If the creep is in range of an energy source, move it away to the bottom-left.
-					creep.move(BOTTOM_LEFT);
-				}
-			}
         }
 	}
 };
