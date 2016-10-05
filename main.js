@@ -6,6 +6,7 @@ var respawner = require('respawner');
 
 module.exports.loop = function ()
 {
+	//Creates list of rooms we control for room update loop
 	var myRooms = [];
 	for(var thisRoomind in Game.rooms)
 	{
@@ -13,6 +14,7 @@ module.exports.loop = function ()
 	}
 	for(var thisRoomind in myRooms)
 	{
+		//Room update loop -- Runs only in rooms we control, makes sure all variables are properly set up
 		var thisRoom = myRooms[thisRoomind];
 		//If room has not been initialized, run the room initializer
 		//Miles note: Modify this once we fix code to run via room instead of a single spawner
@@ -83,29 +85,6 @@ module.exports.loop = function ()
 				else
 				{
 					thisRoom.memory.saving = false;
-				}
-			}
-
-			for(var name in Game.creeps)
-			{
-				//For each creep in existence:
-				//Set variable creep for current creep
-				var creep = Game.creeps[name];
-				
-				if(creep.memory.role == 'harvester' || creep.memory.role == 'bigharvester')
-				{
-					//If creep is a Harvester or Big Harvester, run the Harvester role
-					roleHarvester.run(creep);
-				}
-				if(creep.memory.role == 'upgrader' && (!thisRoom.memory.saving || creep.energy > 0))
-				{
-					//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
-					roleUpgrader.run(creep);
-				}
-				if(creep.memory.role == 'builder' && (!thisRoom.memory.saving || creep.energy > 0))
-				{
-					//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
-					roleBuilder.run(creep);
 				}
 			}
 		}
