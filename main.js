@@ -17,7 +17,6 @@ module.exports.loop = function ()
 		//Room update loop -- Runs only in rooms we control, makes sure all variables are properly set up
 		var thisRoom = myRooms[thisRoomind];
 		//If room has not been initialized, run the room initializer
-		//Miles note: Modify this once we fix code to run via room instead of a single spawner
 		if(!thisRoom.memory.initialized1) roomInit.first(thisRoom);
 		else if(thisRoom.memory.initialize2) roomInit.second(thisRoom);
 		else if(thisRoom.memory.initialized1 && !thisRoom.memory.initialize2)
@@ -55,6 +54,12 @@ module.exports.loop = function ()
 						tower.attack(closestHostile);
 					}
 				}
+			}
+			for(var sites in Game.constructionSites.ConstructionSite)
+			{
+			    var site = Game.constructionSites.ConstructionSite[sites];
+			    thisRoom.memory.buildSites = 0;//Reinitialize variable due to inability to detect construction site being finished
+			    if(site.room == thisRoom) thisRoom.memory.buildSites++;//If construction site is in current room, increment the number of sites within the room.
 			}
 			//Set variable array for all Spawns in room
 			var spawns = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
@@ -138,9 +143,9 @@ module.exports.loop = function ()
 			//If creep is a Harvester or Big Harvester, run the Harvester role
 			roleHarvester.run(creep);
 		}
-		if(creep.memory.role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving))
+		if(creep.memory.role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && creep.room.controller.level == 1)))
 		{
-			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
+			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy OR the room is level 1, run the Upgrader role
 			roleUpgrader.run(creep);
 		}
 		if(creep.memory.role == 'builder' && (creep.memory.building || !creep.room.memory.saving))

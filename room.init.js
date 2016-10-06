@@ -1,6 +1,5 @@
 var roomInit = 
 {
-	//NOTE TO SELF IN CASE I FORGET: To fix this bug, split into two inits because items created don't actually exist until the second tick.
 	first: function(thisRoom)
 	{
 		//Set variable array for all energy sources in room
@@ -20,10 +19,10 @@ var roomInit =
 			thisRoom.memory.sourceFlags.push(flagname);
 		}
 		
-		//Set variable array within room memory for total tiles in room that can be harvested from
+		//Set variable within room memory for total tiles in room that can be harvested from
 		thisRoom.memory.totalHarvest = 0;
-		
-		
+		//Set variable within room memory for total construction sites in room
+		thisRoom.memory.buildSites = 0;
 		
 		//Once room is successfully initialized, set initialize flag so this code does not run again
 		thisRoom.memory.initialized1 = true;
