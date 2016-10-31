@@ -143,9 +143,9 @@ module.exports.loop = function ()
 			//If creep is a Harvester or Big Harvester, run the Harvester role
 			roleHarvester.run(creep);
 		}
-		if(creep.memory.role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && creep.room.controller.level == 1)))
+		if(creep.memory.role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && (creep.room.controller.level == 1 || creep.room.controller.ticksToDowngrade < 2000))))
 		{
-			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy OR the room is level 1, run the Upgrader role
+			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy OR the room is level 1 OR the room is about to downgrade, run the Upgrader role
 			roleUpgrader.run(creep);
 		}
 		if(creep.memory.role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
