@@ -11,6 +11,23 @@
             var role = current.type;
             var max = current.qty;
             var condition = this.condList(thisRoom,current.condition);
+            switch(role)
+            {
+                case 'harvester':
+                    if(thisRoom.memory.harvesterCt < max && condition) return 'harvester';
+                    break;
+                case 'harvester2':
+                    if(thisRoom.memory.harvesterCt < max && condition) return 'harvester2';
+                    break;
+                case 'upgrader':
+                    if(thisRoom.memory.upgraderCt < max && condition) return 'upgrader';
+                    break;
+                case 'builder':
+                    if(thisRoom.memory.builderCt < max && condition) return 'builder';
+                    break;
+                default:
+                    break;
+            }
         }
 
     },
@@ -66,7 +83,7 @@
         '3'://Third and final priority: Harvesters until maxed or RCL upgrade
         {
             type: 'harvester',
-            qty: 11,//PLACEHOLDER. Replace with code to find room.memory.totalHarvest
+            qty: thisRoom.memory.totalHarvest,
             condition: 'true'
         }
     },
@@ -87,13 +104,13 @@
         '3'://First main priority: Room qty of Harvesters (if RCL2 extensions not finished)
         {
             type: 'harvester',
-            qty: 11,//PLACEHOLDER. Replace with code to find room.memory.totalHarvest
+            qty: thisRoom.memory.totalHarvest,
             condition: 'etier1'
         },
         '4'://First main priority: Room qty of Harvester2s (if RCL2 extensions finished)
         {
             type: 'harvester2',
-            qty: 11,//PLACEHOLDER. Replace with code to find room.memory.totalHarvest
+            qty: thisRoom.memory.totalHarvest,
             condition: 'etier2'
         },
         '5'://Third main priority: Single Builder (to begin construction work ASAP)
@@ -103,13 +120,13 @@
             qty: 1,
             condiion: 'build'
         },
-        '6'://Fourth main priority: Handful of Upgraders (Miles note: Argue about exact number later)
+        '6'://Fourth main priority: Handful of Upgraders (Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         {
             type: 'upgrader',
             qty: 5,
             condition: 'true'
         },
-        '7'://Fifth main priority: Handful of Builders (if there are construction sites or repairs needed) (Miles note: Argue about exact number later)
+        '7'://Fifth main priority: Handful of Builders (if there are construction sites or repairs needed) (Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         {
             type: 'builder',
             qty: 3,
