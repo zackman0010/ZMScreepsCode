@@ -1,5 +1,5 @@
 var respawner = {
-	'length': 17,
+	'length': 22,
 	'1': {
 		type: 'harvester',
 		name: 'Harvester1',
@@ -118,6 +118,41 @@ var respawner = {
 		minenergy: 550,
 		maxenergy: 25000,
 		body: [WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
+	},
+	'18': {
+		type: 'harvester',
+		name: 'Harvester9',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'19': {
+		type: 'harvester',
+		name: 'Harvester10',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'20': {
+		type: 'harvester',
+		name: 'Harvester11',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'21': {
+		type: 'harvester',
+		name: 'Harvester12',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'22': {
+		type: 'harvester',
+		name: 'Harvester13',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
 	}
 };
 

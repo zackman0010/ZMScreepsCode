@@ -21,6 +21,7 @@ var roleHarvester =
 					break;
 				}
 			}
+			if (creep.memory.harvestingFrom == null) creep.memory.collecting = false;
 	    }
 	    if(creep.memory.collecting && creep.carry.energy == creep.carryCapacity)
 		{
@@ -29,6 +30,8 @@ var roleHarvester =
 			var source = Game.flags[sourceFlags[creep.memory.harvestingFrom]];
 			creep.memory.harvestingFrom = null;
 			source.memory.actHarvest--;
+			creep.memory.targetSet = false;
+			creep.memory.target = null;
 	    }
 		
 	    if(creep.memory.collecting)
@@ -42,28 +45,55 @@ var roleHarvester =
         }
         else
 		{
-			//If the creep is not collecting energy:
-			//Create a variable array of the room's extensions, spawns, and towers (the structures that can hold energy) that are not full
-            var targets = creep.room.find(FIND_STRUCTURES,
-			{
-                    filter: (structure) =>
-					{
-                        return (structure.structureType == STRUCTURE_SPAWN ||
-                                structure.structureType == STRUCTURE_EXTENSION ||
-                                structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
-                    }
-            });
-			
-            if(targets.length > 0)
-			{
+			if (!creep.memory.targetSet) {
+				//If the creep is not collecting energy:
+				//Find the closest spawn that is not yet full, then fill it
+				var targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
+					{return (structure.structureType == STRUCTURE_SPAWN && structure.energy < structure.energyCapacity)},
+					}
+				);
+				//If no spawns are found, find the closest extension and fill it
+				if (targets.length == 0) {
+					targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
+						{return (structure.structureType == STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity)},
+						}
+					);
+				}
+				//If no extensions are found, find the closest tower and fill it
+				if (targets.length == 0) {
+					targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
+						{return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity)},
+						}
+					);
+				}
+				
+				//Set the current target of the creep
+				if (targets.length > 0) {
+					var target_object = creep.pos.findClosestByPath(targets);
+					creep.memory.target = target_object.id;
+					creep.memory.targetSet = true;
+				}
+			} else {
+				//If the target was filled by something else, delete the target
+				if (creep.memory.target == null) {
+					creep.memory.targetSet = false;
+					return;
+				}
+				var current_target = Game.getObjectById(creep.memory.target);
+				if (current_target == null) return;
+				if (current_target.energy == current_target.energyCapacity) {
+					creep.memory.target = null;
+					creep.memory.targetSet = false;
+					return;
+				}
 				//If there are targets to transfer energy to:
 				//If the creep is out of range of the first target, move toward it.
 				//If the creep is in range, it automatically transfers thanks to the if statement
-                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
+				if(creep.transfer(current_target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE)
 				{
-                    creep.moveTo(targets[0]);
-                }
-            }
+					creep.moveTo(current_target);
+				}
+			}
         }
 	}
 };
