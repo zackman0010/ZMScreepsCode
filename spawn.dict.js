@@ -79,10 +79,14 @@
     },
     'role': function(thisRoom,type)
     {
-        //Function run by spawning code. Takes role determined by queue function and returns the creep's body.
+        //Function run by spawning code. Takes role determined by queue function and returns an array with the three parts of a creep's constructor.
         switch(type)
         {
-
+            case 'harvester':
+                return [[WORK,CARRY,MOVE],null,null];
+                break;
+            default:
+                break;
         }
     },
     '1'://RCL 1
