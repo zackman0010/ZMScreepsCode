@@ -5,6 +5,17 @@
         //Function run by the dictionary. Main passes in the room being used by this spawner.
         //Create a dictionary from this dictionary using the key of the room's controller level
         var roomDict = this[thisRoom.controller.level.toString()];
+
+        //Miles note: This originally was intended to be stored in thisroom.memory, although I've completely forgotten why. Consider moving it if necessary.
+        var harvesters = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester');
+        var harvesterCt = harvesters.length;
+        var harvester2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester2');
+        harvesterCt += harvester2s.length;
+        var upgraders = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader');
+        var upgraderCt = upgraders.length;
+        var builders = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder');
+        var builderCt = builders.length;
+
         for(var i = 1;i < roomDict.length;i++)
         {
             var current = roomDict[i.toString()];
@@ -14,16 +25,16 @@
             switch(role)
             {
                 case 'harvester':
-                    if(thisRoom.memory.harvesterCt < max && condition) return 'harvester';
+                    if(harvesterCt < max && condition) return 'harvester';
                     break;
                 case 'harvester2':
-                    if(thisRoom.memory.harvesterCt < max && condition) return 'harvester2';
+                    if(harvesterCt < max && condition) return 'harvester2';
                     break;
                 case 'upgrader':
-                    if(thisRoom.memory.upgraderCt < max && condition) return 'upgrader';
+                    if(upgraderCt < max && condition) return 'upgrader';
                     break;
                 case 'builder':
-                    if(thisRoom.memory.builderCt < max && condition) return 'builder';
+                    if(builderCt < max && condition) return 'builder';
                     break;
                 default:
                     break;
