@@ -77,6 +77,14 @@
             return false;
         }
     },
+    'role': function(thisRoom,type)
+    {
+        //Function run by spawning code. Takes role determined by queue function and returns the creep's body.
+        switch(type)
+        {
+
+        }
+    },
     '1'://RCL 1
     {
         '1'://First priority: 3 Harvesters
