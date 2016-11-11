@@ -12,6 +12,9 @@ module.exports.loop = function ()
 	{
 		if(Game.rooms[thisRoomind].controller.my) myRooms.push(Game.rooms[thisRoomind]);
 	}
+	if (!Memory.creeps) {
+	    Memory.creeps ={};
+	}
 	for(var thisRoomind in myRooms)
 	{
 		//Room update loop -- Runs only in rooms we control, makes sure all variables are properly set up
@@ -21,6 +24,16 @@ module.exports.loop = function ()
 		else if(thisRoom.memory.initialize2) roomInit.second(thisRoom);
 		else if(thisRoom.memory.initialized1 && !thisRoom.memory.initialize2)
 		{
+			//Check for RCL upgrade
+			if (thisRoom.memory.RCL < thisRoom.controller.level) {
+				thisRoom.memory.RCL = thisRoom.controller.level;
+				Game.notify("The RCL in room " + thisRoom.name + " has gone up a level.");
+				console.log("The RCL in room " + thisRoom.name + " has gone up a level.")
+			} else if (thisRoom.memory.RCL > thisRoom.controller.level) {
+				thisRoom.memory.RCL = thisRoom.controller.level;
+				Game.notify("The RCL in room " + thisRoom.name + " has downgraded! Check your Upgraders.");
+				console.log("The RCL in room " + thisRoom.name + " has downgraded! Check your Upgraders.");
+			}
 			//Set variable array for all towers in spawn's room
 			var towers = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_TOWER)}});
 			if (towers.length > 0)
@@ -81,6 +94,9 @@ module.exports.loop = function ()
 						creepmem = {role: current.type}; //Memory does not exist, set initial memory
 					} else {
 						creepmem = Memory.creeps[current.name]; //Memory does exist, do not overwrite memory
+						if (creepmem.harvestingFrom != null) Memory.flags[thisRoom.memory.sourceFlags[creepmem.harvestingFrom]].actHarvest--;
+						creepmem.harvestingFrom = null;
+						creepmem.collecting = false;
 					}
 					if (totalenergy >= current.minenergy && totalenergy < current.maxenergy)
 					{
@@ -114,6 +130,7 @@ module.exports.loop = function ()
 								thisRoom.memory.saving = false;
 								spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
 								allbusy = false;
+								console.log(spawn.name + " is now creating " + current.name);
 								break;
 							}
 						}
@@ -138,7 +155,7 @@ module.exports.loop = function ()
 		//Set variable creep for current creep
 		var creep = Game.creeps[name];
 		
-		if(creep.memory.role == 'harvester' || creep.memory.role == 'bigharvester')
+		if(creep.memory.role == 'harvester')
 		{
 			//If creep is a Harvester or Big Harvester, run the Harvester role
 			roleHarvester.run(creep);

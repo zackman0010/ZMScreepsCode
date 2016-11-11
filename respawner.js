@@ -1,5 +1,5 @@
 var respawner = {
-	'length': 10,
+	'length': 17,
 	'1': {
 		type: 'harvester',
 		name: 'Harvester1',
@@ -22,53 +22,102 @@ var respawner = {
 		body: [WORK, CARRY, MOVE]
 	},
 	'4': {
-		type: 'bigharvester',
-		name: 'BigHarvester1',
-		minenergy: 550,
-		maxenergy: 25000,
-		body: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+		type: 'harvester',
+		name: 'Harvester4',
+		minenergy: 0,
+		maxenergy: 550,
+		body: [WORK, CARRY, MOVE]
 	},
 	'5': {
-		type: 'bigharvester',
-		name: 'BigHarvester2',
-		minenergy: 550,
+		type: 'harvester',
+		name: 'Harvester5',
+		minenergy: 0,
 		maxenergy: 25000,
-		body: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+		body: [WORK, CARRY, MOVE]
 	},
 	'6': {
-		type: 'bigharvester',
-		name: 'BigHarvester3',
+		type: 'harvester',
+		name: 'Harvester6',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'7': {
+		type: 'harvester',
+		name: 'Harvester7',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'8': {
+		type: 'harvester',
+		name: 'Harvester8',
+		minenergy: 0,
+		maxenergy: 25000,
+		body: [WORK, CARRY, MOVE]
+	},
+	'9': {
+		type: 'harvester',
+		name: 'Harvester1',
 		minenergy: 550,
 		maxenergy: 25000,
 		body: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
 	},
-	'7': {
+	'10': {
+		type: 'harvester',
+		name: 'Harvester2',
+		minenergy: 550,
+		maxenergy: 25000,
+		body: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+	},
+	'11': {
+		type: 'harvester',
+		name: 'Harvester3',
+		minenergy: 550,
+		maxenergy: 25000,
+		body: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+	},
+	'12': {
+		type: 'harvester',
+		name: 'Harvester4',
+		minenergy: 550,
+		maxenergy: 25000,
+		body: [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+	},
+	'13': {
 		type: 'upgrader',
 		name: 'Upgrader1',
 		minenergy: 0,
-		maxenergy: 25000,
+		maxenergy: 550,
 		body: [WORK,CARRY,MOVE]
 	},
-	'8': {
+	'14': {
 		type: 'upgrader',
 		name: 'Upgrader2',
 		minenergy: 0,
 		maxenergy: 25000,
 		body: [WORK,CARRY,MOVE]
 	},
-	'9': {
+	'15': {
 		type: 'upgrader',
 		name: 'Upgrader3',
 		minenergy: 0,
 		maxenergy: 25000,
 		body: [WORK,CARRY,MOVE]
 	},
-	'10': {
+	'16': {
 		type: 'builder',
 		name: 'Builder1',
 		minenergy: 0,
 		maxenergy: 25000,
 		body: [WORK,CARRY,MOVE]
+	},
+	'17': {
+		type: 'upgrader',
+		name: 'Upgrader1',
+		minenergy: 550,
+		maxenergy: 25000,
+		body: [WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
 	}
 };
 

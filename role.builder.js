@@ -27,7 +27,11 @@ var roleBuilder =
 				//If the creep is in range, it will automatically build due to the if statement
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE)
 				{
-                    creep.moveTo(targets[0]);
+                    if (creep.moveTo(targets[0], {noPathFinding: true}) == ERR_NOT_FOUND) {
+                        creep.moveTo(targets[0]);
+                    };
+                } else {
+                    delete creep.memory._move;
                 }
             }
 	    }
