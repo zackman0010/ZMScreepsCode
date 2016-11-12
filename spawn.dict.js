@@ -83,8 +83,19 @@
         switch(type)
         {
             case 'harvester':
-                return [[WORK,CARRY,MOVE],null,null];
+                return [[WORK,CARRY,MOVE],null,{role: 'harvester'}];
                 break;
+            case 'harvester2':
+                return [[WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE],null,{role: 'harvester2'}];
+                break;
+            case 'upgrader':
+                return [[WORK,CARRY,MOVE],null,{role: 'upgrader'}];
+                break;
+            case 'upgrader2':
+                return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader2'}];
+                break;
+            case 'builder':
+                return [[WORK,CARRY,MOVE],null,{role: 'builder'}];
             default:
                 break;
         }
