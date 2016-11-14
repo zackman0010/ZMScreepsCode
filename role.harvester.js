@@ -70,6 +70,7 @@ var roleHarvester =
 				//Set the current target of the creep
 				if (targets.length > 0) {
 					var target_object = creep.pos.findClosestByPath(targets);
+					if (target_object == null) return;
 					creep.memory.target = target_object.id;
 					creep.memory.targetSet = true;
 				}

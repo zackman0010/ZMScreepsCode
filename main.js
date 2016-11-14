@@ -44,21 +44,6 @@ module.exports.loop = function ()
 				{
 					//Set variable for individual tower
 					var tower = towers[ind];
-					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
-					var targets = tower.room.find(FIND_STRUCTURES,
-					{
-						filter: (structure) =>
-						{
-							return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 10000) ||
-									(structure.structureType == STRUCTURE_WALL && structure.hits < 10000) ||
-									(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL))
-						}
-					});
-					//Repair any targets
-					if(targets.length > 0)
-					{
-						tower.repair(targets[0]);
-					}
 					
 					//Set variable for closest hostile creep
 					var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -66,6 +51,23 @@ module.exports.loop = function ()
 					if(closestHostile)
 					{
 						tower.attack(closestHostile);
+					}
+					
+					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
+					var targets = tower.room.find(FIND_STRUCTURES,
+					{
+						filter: (structure) =>
+						{
+							return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 10000) ||
+									(structure.structureType == STRUCTURE_WALL && structure.hits < 10000) ||
+									(structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax - 300) ||
+									(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_ROAD))
+						}
+					});
+					//Repair any targets
+					if(targets.length > 0)
+					{
+						tower.repair(targets[0]);
 					}
 				}
 			}
@@ -80,6 +82,10 @@ module.exports.loop = function ()
 			{
 				//Gets the current creep in the dictionary of creeps
 				var current = respawner[i.toString()];
+				if (current.role == "builder") {
+					var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+					if (targets.length == 0) continue;
+				}
 				if (!Game.creeps[current.name])
 				{
 					//If creep does not exist in game (Died or not created yet)
