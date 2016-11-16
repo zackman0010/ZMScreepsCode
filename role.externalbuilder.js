@@ -34,13 +34,15 @@ module.exports = {
 				} else {
 					creep.memory.target = null;
 					creep.memory.target_set = false;
-					creep.suicide();
 				}
 			} else {
-				var target_object = Game.getObjectById('af6b438f54dbb47');
-				if (target_object == null) return;
-				creep.memory.target = target_object.id;
-				creep.memory.target_set = true;
+				var targets = Game.flags["ExternalBuilder"].room.find(FIND_CONSTRUCTION_SITES);
+				if (targets.length > 0) {
+					var target_object = Game.flags["ExternalBuilder"].pos.findClosestByPath(targets);
+					if (target_object == null) return;
+					creep.memory.target = target_object.id;
+					creep.memory.target_set = true;
+				}
 			}
 	    }
 	    else
