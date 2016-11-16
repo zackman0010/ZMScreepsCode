@@ -11,30 +11,43 @@
         var harvesterCt = harvesters.length;
         var harvester2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester2');
         harvesterCt += harvester2s.length;
+        var harvester3s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester3');
+        harvesterCt += harvester3s.length;
+
         var upgraders = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader');
         var upgraderCt = upgraders.length;
+        var upgrader2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader2');
+        upgraderCt += upgrader2s.length;
+        var upgrader3s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader3');
+        upgraderCt += upgrader3s.length;
+
         var builders = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder');
         var builderCt = builders.length;
+        var builder2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder2');
+        builderCt += builder2s.length;
+        var builder3s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder3');
+        builderCt += builder3s.length;
 
         for(var i = 1;i < roomDict.length;i++)
         {
             var current = roomDict[i.toString()];
             var role = current.type;
             var max = current.qty;
-            var condition = this.condList(thisRoom,current.condition);
+            var condition1 = this.condList(thisRoom,current.condition1);
+            var condition2 = this.condList(thisRoom,current.condition2);
             switch(role)
             {
                 case 'harvester':
-                    if(harvesterCt < max && condition) return 'harvester';
+                    if(harvesterCt < max && condition1 && condition2) return 'harvester';
                     break;
                 case 'harvester2':
-                    if(harvesterCt < max && condition) return 'harvester2';
+                    if(harvesterCt < max && condition1 && condition2) return 'harvester2';
                     break;
                 case 'upgrader':
-                    if(upgraderCt < max && condition) return 'upgrader';
+                    if(upgraderCt < max && condition1 && condition2) return 'upgrader';
                     break;
                 case 'builder':
-                    if(builderCt < max && condition) return 'builder';
+                    if(builderCt < max && condition1 && condition2) return 'builder';
                     break;
                 default:
                     break;
@@ -86,16 +99,29 @@
                 return [[WORK,CARRY,MOVE],null,{role: 'harvester'}];
                 break;
             case 'harvester2':
-                return [[WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE],null,{role: 'harvester2'}];
+                return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE],null,{role: 'harvester2'}];
+                break;
+            case 'harvester3':
+                return [[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],null,{ role: 'harvester3' }];
                 break;
             case 'upgrader':
-                return [[WORK,CARRY,MOVE],null,{role: 'upgrader'}];
+                return [[WORK,CARRY,MOVE,MOVE],null,{role: 'upgrader'}];
                 break;
             case 'upgrader2':
                 return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader2'}];
                 break;
+            case 'upgrader3':
+                return [[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader3'}];
+                break;
             case 'builder':
-                return [[WORK,CARRY,MOVE],null,{role: 'builder'}];
+                return [[WORK,CARRY,MOVE,MOVE],null,{role: 'builder'}];
+                break;
+            case 'builder2':
+                return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'builder2'}];
+                break;
+            case 'builder3':
+                return [[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'builder3'}];
+                break;
             default:
                 break;
         }
@@ -106,19 +132,22 @@
         {
             type: 'harvester',
             qty: 3,
-            condition: 'true'
+            condition1: 'true',
+            condition2: 'true'
         },
         '2'://Second priority: 1 Upgrader (to allow room to reach RCL2 asap)
         {
             type: 'upgrader',
             qty: 1,
-            condition: 'true'
+            condition1: 'true',
+            condition2: 'true'
         },
         '3'://Third and final priority: Harvesters until maxed or RCL upgrade
         {
             type: 'harvester',
             qty: thisRoom.memory.totalHarvest,
-            condition: 'true'
+            condition1: 'true',
+            condition2: 'true'
         }
     },
     '2'://RCL 2
@@ -127,45 +156,162 @@
         {
             type: 'harvester',
             qty: 3,
-            condition: 'emergency'
+            condition1: 'emergency',
+            condition2: 'true'
         },
         '2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
         {
             type: 'upgrader',
             qty: 1,
-            condition: 'downgrade'
+            condition1: 'downgrade',
+            condition2: 'true'
         },
         '3'://First main priority: Room qty of Harvesters (if RCL2 extensions not finished)
         {
             type: 'harvester',
             qty: thisRoom.memory.totalHarvest,
-            condition: 'etier1'
+            condition1: 'etier1',
+            condition2: 'true'
         },
         '4'://First main priority: Room qty of Harvester2s (if RCL2 extensions finished)
         {
             type: 'harvester2',
             qty: thisRoom.memory.totalHarvest,
-            condition: 'etier2'
+            condition1: 'etier2',
+            condition2: 'true'
         },
-        '5'://Third main priority: Single Builder (to begin construction work ASAP)
+        '5'://Second main priority: Single Builder (to begin construction work ASAP)
         {
             //(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
             type: 'builder',
             qty: 1,
-            condiion: 'build'
+            condition1: 'build',
+            condition2: 'true'
         },
-        '6'://Fourth main priority: Handful of Upgraders (Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        '6'://Third main priority: Handful of Upgraders (if RCL2 extensions not finished)
         {
+            //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
             type: 'upgrader',
             qty: 5,
-            condition: 'true'
+            condition1: 'etier1',
+            condition2: 'true'
         },
-        '7'://Fifth main priority: Handful of Builders (if there are construction sites or repairs needed) (Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        '7'://Third main priority: Handful of Upgrader2s (if RCL2 extensions finished)
         {
+            type: 'upgrader2',
+            qty: 5,
+            condition1: 'etier2',
+            condition2: 'true'
+        },
+        '8'://Fourth main priority: Handful of Builders (if RCL2 extensions not finished) (if there are construction sites or repairs needed)
+        {
+            //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
             type: 'builder',
             qty: 3,
-            condition: 'build'
+            condition1: 'build',
+            condition2: 'etier1'
+        },
+        '9'://Fourth main priority: Handful of Builder2s (if RCL2 extensions finished) (if there are construction sites or repairs needed)
+        {
+            //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+            type: 'builder2',
+            qty: 3,
+            condition1: 'build',
+            condition2: 'etier2'
+        }
+    },
+    '3'://RCL3
+    {
+        '1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
+        {
+            type: 'harvester',
+            qty: 3,
+            condition1: 'emergency',
+            condition2: 'true'
+        },
+        '2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
+        {
+            type: 'upgrader',
+            qty: 1,
+            condition1: 'downgrade',
+            condition2: 'true'
+        },
+        '3'://First main priority: Room qty of Harvesters (if RCL2 extensions somehow not finished)
+        {
+            type: 'harvester',
+            qty: thisRoom.memory.totalHarvest,
+            condition1: 'etier1',
+            condition2: 'true'
+        },
+        '4'://First main priority: Room qty of Harvester2s (if RCL2 extensions finished but not RCL3 extensions)
+        {
+            type: 'harvester2',
+            qty: thisRoom.memory.totalHarvest,
+            condition1: 'etier2',
+            condition2: 'true'
+        },
+        '5'://First main priority: Room qty of Harvester3s (if RCL3 extensions finished)
+        {
+            type: 'harvester3',
+            qty: thisRoom.memory.totalHarvest,
+            condition1: 'etier3',
+            condition2: 'true'
+        },
+        '6'://Second main priority: Single Builder (to begin construction work ASAP)
+        {
+            //(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
+            type: 'builder',
+            qty: 1,
+            condition1: 'build',
+            condition2: 'true'
+        },
+        '7'://Third main priority: Handful of Upgraders (if RCL2 extensions somehow not finished)
+        {
+            //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+            type: 'upgrader',
+            qty: 5,
+            condition1: 'etier1',
+            condition2: 'true'
+        },
+        '8'://Third main priority: Handful of Upgrader2s (if RCL2 extensions finished but not RCL3 extensions)
+        {
+            //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+            type: 'upgrader2',
+            qty: 5,
+            condition1: 'etier2',
+            condition2: 'true'
+        },
+        '9'://Third main priority: Handful of Upgrader3s (if RCL3 extensions finished)
+        {
+            //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+            type: 'upgrader3',
+            qty: 5,
+            condition1: 'etier3',
+            condition2: 'true'
+        },
+        '10'://Fourth main priority: Handful of Builders (if RCL2 extensions somehow not finished) (if there are construction sites or repairs needed)
+        {
+            //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+            type: 'builder',
+            qty: 3,
+            condition1: 'build',
+            condition2: 'etier1'
+        },
+        '11'://Fourth main priority: Handful of Builder2s (if RCL2 extensions somehow finished) (if there are construction sites or repairs needed)
+        {
+            //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+            type: 'builder2',
+            qty: 3,
+            condition1: 'build',
+            condition2: 'etier2'
+        },
+        '12'://Fourth main priority: Handful of Builder3s (if RCL3 extensions finished) (if there are construction sites or repairs needed)
+        {
+            //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+            type: 'builder3',
+            qty: 3,
+            condition1: 'build',
+            condition2: 'etier3'
         }
     }
-    
 }
