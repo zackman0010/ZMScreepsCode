@@ -1,11 +1,14 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleExternal = require('role.externalbuilder');
 var roomInit = require('room.init');
 var respawner = require('respawner');
 
 module.exports.loop = function ()
 {
+	var allylist = ["zackman0010", "SuperNerdMiles"];
+	
 	//Creates list of rooms we control for room update loop
 	var myRooms = [];
 	for(var thisRoomind in Game.rooms)
@@ -43,6 +46,23 @@ module.exports.loop = function ()
 				{
 					//Set variable for individual tower
 					var tower = towers[ind];
+					
+					//Set variable for closest hostile creep
+					var creepList = tower.room.find(FIND_CREEPS);
+					var hostileList = [];
+					for(var creepind in creepList) {
+						if (!allylist.includes(creepList[creepind].owner.username)) {
+							hostileList.push(creepList[creepind]);
+						}
+					}
+					
+					var closestHostile = tower.pos.findClosestByRange(hostileList);
+					//Fire at closest creep
+					if(closestHostile)
+					{
+						tower.attack(closestHostile);
+					}
+					
 					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
 					var targets = tower.room.find(FIND_STRUCTURES,
 					{
@@ -50,21 +70,14 @@ module.exports.loop = function ()
 						{
 							return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 10000) ||
 									(structure.structureType == STRUCTURE_WALL && structure.hits < 10000) ||
-									(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL))
+									(structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax - 300) ||
+									(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_ROAD))
 						}
 					});
 					//Repair any targets
 					if(targets.length > 0)
 					{
 						tower.repair(targets[0]);
-					}
-					
-					//Set variable for closest hostile creep
-					var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-					//Fire at closest creep
-					if(closestHostile)
-					{
-						tower.attack(closestHostile);
 					}
 				}
 			}
@@ -85,15 +98,20 @@ module.exports.loop = function ()
 			{
 				//Gets the current creep in the dictionary of creeps
 				var current = respawner[i.toString()];
-				if (!Game.creeps[current.name])
+				if (current.role == "builder") {
+					var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+					if (targets.length == 0) continue;
+				}
+				var currentname = thisRoom.name + "-" + current.name;
+				if (!Game.creeps[currentname])
 				{
 					//If creep does not exist in game (Died or not created yet)
 					var creepmem = {};
 					//Check to prevent memory from being overwritten
-					if (!Memory.creeps[current.name]) {
-						creepmem = {role: current.type}; //Memory does not exist, set initial memory
+					if (!Memory.creeps[currentname]) {
+						creepmem = {role: current.type, homeroom: thisRoom.name}; //Memory does not exist, set initial memory
 					} else {
-						creepmem = Memory.creeps[current.name]; //Memory does exist, do not overwrite memory
+						creepmem = Memory.creeps[currentname]; //Memory does exist, do not overwrite memory
 						if (creepmem.harvestingFrom != null) Memory.flags[thisRoom.memory.sourceFlags[creepmem.harvestingFrom]].actHarvest--;
 						creepmem.harvestingFrom = null;
 						creepmem.collecting = false;
@@ -108,7 +126,7 @@ module.exports.loop = function ()
 							var spawn = spawns[spawnind];
 							if (!spawnbusy[spawnind]) {
 								//Only try to spawn the creep if the spawn has not been given an order this tick
-								var result = spawn.createCreep(current.body, current.name, creepmem);
+								var result = spawn.createCreep(current.body, currentname, creepmem);
 							} else {
 								//If the spawn has been given an order this tick, prevent previous order from being overwritten
 								var result = ERR_BUSY;
@@ -130,7 +148,7 @@ module.exports.loop = function ()
 								thisRoom.memory.saving = false;
 								spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
 								allbusy = false;
-								console.log(spawn.name + " is now creating " + current.name);
+								console.log(spawn.name + " is now creating " + currentname);
 								break;
 							}
 						}
@@ -168,7 +186,10 @@ module.exports.loop = function ()
 		if(creep.memory.role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
 		{
 			//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
-			roleBuilder.run(creep);
+		    roleBuilder.run(creep);
+		}
+		if(creep.memory.role == 'externalbuilder') {
+		    roleExternal.run(creep);
 		}
 	}
 }
