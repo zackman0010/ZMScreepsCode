@@ -74,6 +74,18 @@ module.exports.loop = function ()
 									(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_ROAD))
 						}
 					});
+
+				    //If tower is sufficiently charged, attempt to repair ramparts and walls further than normal
+					if(tower.energy > 750)
+					{
+					    targets.push(tower.room.find(FIND_STRUCTURES,
+                            {
+                                filter: (structure) => {
+                                    return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 20000) ||
+                                            (structure.structureType == STRUCTURE_WALL && structure.hits < 20000))
+                                }
+                            }));
+					}
 					//Repair any targets
 					if(targets.length > 0)
 					{
