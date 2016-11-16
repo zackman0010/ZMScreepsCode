@@ -61,6 +61,7 @@ module.exports.loop = function ()
 					if(closestHostile)
 					{
 						tower.attack(closestHostile);
+						continue;
 					}
 					
 					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
@@ -90,6 +91,7 @@ module.exports.loop = function ()
 					if(targets.length > 0)
 					{
 						tower.repair(targets[0]);
+						continue;
 					}
 				}
 			}
