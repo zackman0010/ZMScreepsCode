@@ -95,12 +95,16 @@ module.exports.loop = function ()
 					}
 				}
 			}
+
+			var currSites;
 			for(var sites in Game.constructionSites.ConstructionSite)
 			{
 			    var site = Game.constructionSites.ConstructionSite[sites];
-			    thisRoom.memory.buildSites = 0;//Reinitialize variable due to inability to detect construction site being finished
-			    if(site.room == thisRoom) thisRoom.memory.buildSites++;//If construction site is in current room, increment the number of sites within the room.
+			    if(site.room == thisRoom) currSites.push(site);//If construction site is in current room, increment the number of sites within the room.
+			    thisRoom.memory.buildSites = currSites.length;
 			}
+			
+
 			//Set variable array for all Spawns in room
 			var spawns = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
 			var spawnbusy = [false, false, false]; //Required so that spawn is only given one order per tick

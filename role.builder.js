@@ -27,12 +27,37 @@ var roleBuilder =
 				//If the creep is in range, it will automatically build due to the if statement
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE)
 				{
-                    if (creep.moveTo(targets[0], {noPathFinding: true}) == ERR_NOT_FOUND) {
+                	if(creep.moveTo(targets[0],{ noPathFinding: true }) == ERR_NOT_FOUND)
+                	{
                         creep.moveTo(targets[0]);
                     };
-                } else {
+                }
+                else
+                {
                     delete creep.memory._move;
                 }
+            }
+	        else
+            {
+            	targets = creep.room.find(FIND_STRUCTURES,
+				{
+					//Detect all damaged structures (or Ramparts and Walls with less than a desired max HP)
+					filter: (structure) => {
+						return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 10000) ||
+								(structure.structureType == STRUCTURE_WALL && structure.hits < 10000) ||
+								(structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax - 300) ||
+								(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_ROAD))
+					}
+				});
+
+            	if(targets.length)
+            	{
+            		if(creep.repair(targets[0]) == ERR_NOT_IN_RANGE)
+            		{
+            			if(creep.moveTo(targets[0],{noPathFinding: true}) == ERR_NOT_FOUND) creep.moveTo(targets[0]);
+						else delete creep.memory_move;
+            		}
+            	}
             }
 	    }
 	    else
