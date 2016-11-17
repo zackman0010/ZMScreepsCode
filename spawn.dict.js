@@ -496,5 +496,308 @@
         	condition1: 'build',
         	condition2: 'etier4'
         }
+    },
+    '5'://RCL5
+    {
+    	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
+        {
+        	type: 'harvester',
+        	qty: 3,
+        	condition1: 'emergency',
+        	condition2: 'true'
+        },
+    	'2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
+        {
+        	type: 'upgrader',
+        	qty: 1,
+        	condition1: 'downgrade',
+        	condition2: 'true'
+        },
+    	'3'://First main priority: Room qty of Harvesters (what's wrong with you?)
+        {
+        	type: 'harvester',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier1',
+        	condition2: 'true'
+        },
+    	'4'://First main priority: Room qty of Harvester2s (are RCL3 extensions seriously not done yet?)
+        {
+        	type: 'harvester2',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier2',
+        	condition2: 'true'
+        },
+    	'5'://First main priority: Room qty of Harvester3s (if RCL3 extensions finished but somehow not RCL4 extensions)
+        {
+        	type: 'harvester3',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier3',
+        	condition2: 'true'
+        },
+    	'6'://First main priority: Room qty of Harvester4s (if RCL4 extensions finished but not RCL5 extensions)
+        {
+        	type: 'harvester4',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier4',
+        	condition2: 'true'
+        },
+    	'7'://First main priority: Room qty of Harvester5s (if RCL5 extensions finished)
+        {
+        	type: 'harvester5',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier5',
+        	condition2: 'true'
+        },
+    	'8'://Second main priority: Single Builder (to begin construction work ASAP)
+        {
+        	//(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
+        	type: 'builder',
+        	qty: 1,
+        	condition1: 'build',
+        	condition2: 'true'
+        },
+    	'9'://Third main priority: Handful of Upgraders (what's wrong with you?)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader',
+        	qty: 5,
+        	condition1: 'etier1',
+        	condition2: 'true'
+        },
+    	'10'://Third main priority: Handful of Upgrader2s (are RCL3 extensions seriously not done yet?)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader2',
+        	qty: 5,
+        	condition1: 'etier2',
+        	condition2: 'true'
+        },
+    	'11'://Third main priority: Handful of Upgrader3s (if RCL3 extensions finished but somehow not RCL4 extensions)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader3',
+        	qty: 5,
+        	condition1: 'etier3',
+        	condition2: 'true'
+        },
+    	'12'://Third main priority: Handful of Upgrader4s (if RCL4 extensions finished but not RCL5 extensions)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader4',
+        	qty: 5,
+        	condition1: 'etier4',
+        	condition2: 'true'
+        },
+    	'13'://Third main priority: Handful of Upgrader5s (if RCL5 extensions finished)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader5',
+        	qty: 5,
+        	condition1: 'etier5',
+        	condition2: 'true'
+        },
+    	'14'://Fourth main priority: Handful of Builders (what's wrong with you?) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier1'
+        },
+    	'15'://Fourth main priority: Handful of Builder2s (are RCL3 extensions seriously not finished yet?) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder2',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier2'
+        },
+    	'16'://Fourth main priority: Handful of Builder3s (if RCL3 extensions finished but somehow not RCL4 extensions) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder3',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier3'
+        },
+    	'17'://Fourth main priority: Handful of Builder4s (if RCL4 extensions finished but not RCL5 extensions) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder4',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier4'
+        },
+		'18'://Fourth main priority: Handful of Builder5s (if RCL5 extensions finished) (if there are construction sites or repairs needed)
+		{
+			//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+			type: 'builder5',
+			qty: 3,
+			condition1: 'build',
+			condition2: 'etier5'
+		}
+    },
+    '6'://RCL5
+    {
+    	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
+        {
+        	type: 'harvester',
+        	qty: 3,
+        	condition1: 'emergency',
+        	condition2: 'true'
+        },
+    	'2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
+        {
+        	type: 'upgrader',
+        	qty: 1,
+        	condition1: 'downgrade',
+        	condition2: 'true'
+        },
+    	'3'://First main priority: Room qty of Harvesters (what's wrong with you?)
+        {
+        	type: 'harvester',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier1',
+        	condition2: 'true'
+        },
+    	'4'://First main priority: Room qty of Harvester2s (you must have been wiped if these are still spawning)
+        {
+        	type: 'harvester2',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier2',
+        	condition2: 'true'
+        },
+    	'5'://First main priority: Room qty of Harvester3s (RCL4 extensions aren't even done yet?)
+        {
+        	type: 'harvester3',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier3',
+        	condition2: 'true'
+        },
+    	'6'://First main priority: Room qty of Harvester4s (if RCL4 extensions finished but somehow not RCL5 extensions)
+        {
+        	type: 'harvester4',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier4',
+        	condition2: 'true'
+        },
+    	'7'://First main priority: Room qty of Harvester5s (if RCL5 extensions finished but not RCL6 extensions)
+        {
+        	type: 'harvester5',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier5',
+        	condition2: 'true'
+        },
+    	'8'://First main priority: Room qty of Harvester6s (if RCL6 extensions finished)
+        {
+        	type: 'harvester6',
+        	qty: thisRoom.memory.totalHarvest,
+        	condition1: 'etier6',
+        	condition2: 'true'
+        },
+    	'9'://Second main priority: Single Builder (to begin construction work ASAP)
+        {
+        	//(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
+        	type: 'builder',
+        	qty: 1,
+        	condition1: 'build',
+        	condition2: 'true'
+        },
+    	'10'://Third main priority: Handful of Upgraders (what's wrong with you?)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader',
+        	qty: 5,
+        	condition1: 'etier1',
+        	condition2: 'true'
+        },
+    	'11'://Third main priority: Handful of Upgrader2s (you must have been wiped if these are still spawning)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader2',
+        	qty: 5,
+        	condition1: 'etier2',
+        	condition2: 'true'
+        },
+    	'12'://Third main priority: Handful of Upgrader3s (RCL4 extensions aren't even done yet?)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader3',
+        	qty: 5,
+        	condition1: 'etier3',
+        	condition2: 'true'
+        },
+    	'13'://Third main priority: Handful of Upgrader4s (if RCL4 extensions finished but somehow not RCL5 extensions)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader4',
+        	qty: 5,
+        	condition1: 'etier4',
+        	condition2: 'true'
+        },
+    	'14'://Third main priority: Handful of Upgrader5s (if RCL5 extensions finished but not RCL6 extensions)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader5',
+        	qty: 5,
+        	condition1: 'etier5',
+        	condition2: 'true'
+        },
+    	'15'://Third main priority: Handful of Upgrader6s (if RCL6 extensions finished)
+        {
+        	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
+        	type: 'upgrader6',
+        	qty: 5,
+        	condition1: 'etier6',
+        	condition2: 'true'
+        },
+    	'16'://Fourth main priority: Handful of Builders (what's wrong with you?) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier1'
+        },
+    	'17'://Fourth main priority: Handful of Builder2s (you must have been wiped if these are still spawning) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder2',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier2'
+        },
+    	'18'://Fourth main priority: Handful of Builder3s (RCL4 extensions aren't even done yet?) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder3',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier3'
+        },
+    	'19'://Fourth main priority: Handful of Builder4s (if RCL4 extensions finished but somehow not RCL5 extensions) (if there are construction sites or repairs needed)
+        {
+        	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+        	type: 'builder4',
+        	qty: 3,
+        	condition1: 'build',
+        	condition2: 'etier4'
+        },
+    	'20'://Fourth main priority: Handful of Builder5s (if RCL5 extensions finished but not RCL6 extensions) (if there are construction sites or repairs needed)
+		{
+			//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+			type: 'builder5',
+			qty: 3,
+			condition1: 'build',
+			condition2: 'etier5'
+		},
+    	'21'://Fourth main priority: Handful of Builder6s (if RCL6 extensions finished) (if there are construction sites or repairs needed)
+		{
+			//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
+			type: 'builder6',
+			qty: 3,
+			condition1: 'build',
+			condition2: 'etier6'
+		}
     }
 }
