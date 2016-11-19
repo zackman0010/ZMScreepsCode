@@ -166,23 +166,24 @@ module.exports.loop = function ()
 		//For each creep in existence:
 		//Set variable creep for current creep
 		var creep = Game.creeps[name];
+		var role = creep.memory.role.substring(0, creep.memory.role.length - 1);
 		
-		if(creep.memory.role == 'harvester')
+		if(role == 'harvester')
 		{
 			//If creep is a Harvester or Big Harvester, run the Harvester role
 			roleHarvester.run(creep);
 		}
-		if(creep.memory.role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && (creep.room.controller.level == 1 || creep.room.controller.ticksToDowngrade < 2000))))
+		if(role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && (creep.room.controller.level == 1 || creep.room.controller.ticksToDowngrade < 2000))))
 		{
 			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy OR the room is level 1 OR the room is about to downgrade, run the Upgrader role
 			roleUpgrader.run(creep);
 		}
-		if(creep.memory.role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
+		if(role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
 		{
 			//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
 		    roleBuilder.run(creep);
 		}
-		if(creep.memory.role == 'externalbuilder') {
+		if(role == 'externalbuilder') {
 		    roleExternal.run(creep);
 		}
 	}

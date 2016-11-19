@@ -7,7 +7,7 @@ var spawnDict =
         var roomDict = this[thisRoom.controller.level.toString()];
 
         //Miles note: This originally was intended to be stored in thisroom.memory, although I've completely forgotten why. Consider moving it if necessary.
-        var harvesters = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester');
+        var harvesters = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester1');
         var harvesterCt = harvesters.length;
         var harvester2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester2');
         harvesterCt += harvester2s.length;
@@ -20,7 +20,7 @@ var spawnDict =
         var harvester6s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester6');
         harvesterCt += harvester6s.length;
 
-        var upgraders = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader');
+        var upgraders = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader1');
         var upgraderCt = upgraders.length;
         var upgrader2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader2');
         upgraderCt += upgrader2s.length;
@@ -33,7 +33,7 @@ var spawnDict =
         var upgrader6s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader6');
         upgraderCt += upgrader6s.length;
 
-        var builders = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder');
+        var builders = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder1');
         var builderCt = builders.length;
         var builder2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder2');
         builderCt += builder2s.length;
@@ -56,7 +56,7 @@ var spawnDict =
             var condition2 = this.condList(thisRoom,current.condition2);
             switch(role)
             {
-                case 'harvester':
+                case 'harvester1':
                     if(harvesterCt < max && condition1 && condition2) return role;
             		break;
                 case 'harvester2':
@@ -66,7 +66,7 @@ var spawnDict =
             	case 'harvester6':
             		if(harvesterCt < max && condition1 && condition2) return role;
             		break;
-                case 'upgrader':
+                case 'upgrader1':
             	case 'upgrader2':
             	case 'upgrader3':
             	case 'upgrader4':
@@ -74,7 +74,7 @@ var spawnDict =
             	case 'upgrader6':
             		if(upgraderCt < max && condition1 && condition2) return role;
             		break;
-                case 'builder':
+                case 'builder1':
             	case 'builder2':
             	case 'builder3':
             	case 'builder4':
@@ -137,8 +137,8 @@ var spawnDict =
         //Function run by spawning code. Takes role determined by queue function and returns an array with the three parts of a creep's constructor.
         switch(type)
         {
-            case 'harvester'://Energy cost: 200 (etier1)
-                return [[WORK,CARRY,MOVE],null,{role: 'harvester'}];
+            case 'harvester1'://Energy cost: 200 (etier1)
+                return [[WORK,CARRY,MOVE],null,{role: 'harvester1'}];
                 break;
             case 'harvester2'://Energy cost: 400 (etier2)
                 return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE],null,{role: 'harvester2'}];
@@ -155,8 +155,8 @@ var spawnDict =
         	case 'harvester6'://Energy cost: 1200 (etier4)
 				return [[WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'harvester6'}];
 				break;
-            case 'upgrader'://Energy cost: 250 (etier1)
-                return [[WORK,CARRY,MOVE,MOVE],null,{role: 'upgrader'}];
+            case 'upgrader1'://Energy cost: 250 (etier1)
+                return [[WORK,CARRY,MOVE,MOVE],null,{role: 'upgrader1'}];
                 break;
             case 'upgrader2'://Energy cost: 500 (etier2)
                 return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader2'}];
@@ -173,8 +173,8 @@ var spawnDict =
         	case 'upgrader6'://Energy cost: 1500 (etier5)
 				return [[WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader6'}];
 				break;
-            case 'builder'://Energy cost: 250 (etier1)
-                return [[WORK,CARRY,MOVE,MOVE],null,{role: 'builder'}];
+            case 'builder1'://Energy cost: 250 (etier1)
+                return [[WORK,CARRY,MOVE,MOVE],null,{role: 'builder1'}];
                 break;
             case 'builder2'://Energy cost: 500 (etier2)
                 return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'builder2'}];
@@ -199,21 +199,21 @@ var spawnDict =
     {
         '1'://First priority: 3 Harvesters
         {
-            type: 'harvester',
+            type: 'harvester1',
             qty: 3,
             condition1: 'true',
             condition2: 'true'
         },
         '2'://Second priority: 1 Upgrader (to allow room to reach RCL2 asap)
         {
-            type: 'upgrader',
+            type: 'upgrader1',
             qty: 1,
             condition1: 'true',
             condition2: 'true'
         },
         '3'://Third and final priority: Harvesters until maxed or RCL upgrade
         {
-            type: 'harvester',
+            type: 'harvester1',
             qty: 'max',
             condition1: 'true',
             condition2: 'true'
@@ -223,21 +223,21 @@ var spawnDict =
     {
         '1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
-            type: 'harvester',
+            type: 'harvester1',
             qty: 3,
             condition1: 'emergency',
             condition2: 'true'
         },
         '2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
         {
-            type: 'upgrader',
+            type: 'upgrader1',
             qty: 1,
             condition1: 'downgrade',
             condition2: 'true'
         },
         '3'://First main priority: Room qty of Harvesters (if RCL2 extensions not finished)
         {
-            type: 'harvester',
+            type: 'harvester1',
             qty: 'max',
             condition1: 'etier1',
             condition2: 'true'
@@ -252,7 +252,7 @@ var spawnDict =
         '5'://Second main priority: Single Builder (to begin construction work ASAP)
         {
             //(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
-            type: 'builder',
+            type: 'builder1',
             qty: 1,
             condition1: 'build',
             condition2: 'true'
@@ -260,7 +260,7 @@ var spawnDict =
         '6'://Third main priority: Handful of Upgraders (if RCL2 extensions not finished)
         {
             //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
-            type: 'upgrader',
+            type: 'upgrader1',
             qty: 5,
             condition1: 'etier1',
             condition2: 'true'
@@ -275,7 +275,7 @@ var spawnDict =
         '8'://Fourth main priority: Handful of Builders (if RCL2 extensions not finished) (if there are construction sites or repairs needed)
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
-            type: 'builder',
+            type: 'builder1',
             qty: 3,
             condition1: 'build',
             condition2: 'etier1'
@@ -293,21 +293,21 @@ var spawnDict =
     {
         '1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
-            type: 'harvester',
+            type: 'harvester1',
             qty: 3,
             condition1: 'emergency',
             condition2: 'true'
         },
         '2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
         {
-            type: 'upgrader',
+            type: 'upgrader1',
             qty: 1,
             condition1: 'downgrade',
             condition2: 'true'
         },
         '3'://First main priority: Room qty of Harvesters (if RCL2 extensions somehow not finished)
         {
-            type: 'harvester',
+            type: 'harvester1',
             qty: 'max',
             condition1: 'etier1',
             condition2: 'true'
@@ -329,7 +329,7 @@ var spawnDict =
         '6'://Second main priority: Single Builder (to begin construction work ASAP)
         {
             //(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
-            type: 'builder',
+            type: 'builder1',
             qty: 1,
             condition1: 'build',
             condition2: 'true'
@@ -337,7 +337,7 @@ var spawnDict =
         '7'://Third main priority: Handful of Upgraders (if RCL2 extensions somehow not finished)
         {
             //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
-            type: 'upgrader',
+            type: 'upgrader1',
             qty: 5,
             condition1: 'etier1',
             condition2: 'true'
@@ -361,7 +361,7 @@ var spawnDict =
         '10'://Fourth main priority: Handful of Builders (if RCL2 extensions somehow not finished) (if there are construction sites or repairs needed)
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
-            type: 'builder',
+            type: 'builder1',
             qty: 3,
             condition1: 'build',
             condition2: 'etier1'
@@ -387,21 +387,21 @@ var spawnDict =
     {
     	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
-        	type: 'harvester',
+        	type: 'harvester1',
         	qty: 3,
         	condition1: 'emergency',
         	condition2: 'true'
         },
     	'2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
         {
-        	type: 'upgrader',
+        	type: 'upgrader1',
         	qty: 1,
         	condition1: 'downgrade',
         	condition2: 'true'
         },
     	'3'://First main priority: Room qty of Harvesters (why are RCL2 extensions not finished yet?)
         {
-        	type: 'harvester',
+        	type: 'harvester1',
         	qty: 'max',
         	condition1: 'etier1',
         	condition2: 'true'
@@ -430,7 +430,7 @@ var spawnDict =
     	'7'://Second main priority: Single Builder (to begin construction work ASAP)
         {
         	//(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
-        	type: 'builder',
+        	type: 'builder1',
         	qty: 1,
         	condition1: 'build',
         	condition2: 'true'
@@ -438,7 +438,7 @@ var spawnDict =
     	'8'://Third main priority: Handful of Upgraders (why are RCL2 extensions not finished yet?)
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
-        	type: 'upgrader',
+        	type: 'upgrader1',
         	qty: 5,
         	condition1: 'etier1',
         	condition2: 'true'
@@ -470,7 +470,7 @@ var spawnDict =
     	'12'://Fourth main priority: Handful of Builders (why are RCL2 extensions not finished yet?) (if there are construction sites or repairs needed)
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
-        	type: 'builder',
+        	type: 'builder1',
         	qty: 3,
         	condition1: 'build',
         	condition2: 'etier1'
@@ -504,21 +504,21 @@ var spawnDict =
     {
     	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
-        	type: 'harvester',
+        	type: 'harvester1',
         	qty: 3,
         	condition1: 'emergency',
         	condition2: 'true'
         },
     	'2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
         {
-        	type: 'upgrader',
+        	type: 'upgrader1',
         	qty: 1,
         	condition1: 'downgrade',
         	condition2: 'true'
         },
     	'3'://First main priority: Room qty of Harvesters (what's wrong with you?)
         {
-        	type: 'harvester',
+        	type: 'harvester1',
         	qty: 'max',
         	condition1: 'etier1',
         	condition2: 'true'
@@ -554,7 +554,7 @@ var spawnDict =
     	'8'://Second main priority: Single Builder (to begin construction work ASAP)
         {
         	//(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
-        	type: 'builder',
+        	type: 'builder1',
         	qty: 1,
         	condition1: 'build',
         	condition2: 'true'
@@ -562,7 +562,7 @@ var spawnDict =
     	'9'://Third main priority: Handful of Upgraders (what's wrong with you?)
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
-        	type: 'upgrader',
+        	type: 'upgrader1',
         	qty: 5,
         	condition1: 'etier1',
         	condition2: 'true'
@@ -602,7 +602,7 @@ var spawnDict =
     	'14'://Fourth main priority: Handful of Builders (what's wrong with you?) (if there are construction sites or repairs needed)
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
-        	type: 'builder',
+        	type: 'builder1',
         	qty: 3,
         	condition1: 'build',
         	condition2: 'etier1'
@@ -644,21 +644,21 @@ var spawnDict =
     {
     	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
-        	type: 'harvester',
+        	type: 'harvester1',
         	qty: 3,
         	condition1: 'emergency',
         	condition2: 'true'
         },
     	'2'://Emergency Upgrader (failsafe to prevent RCL downgrade)
         {
-        	type: 'upgrader',
+        	type: 'upgrader1',
         	qty: 1,
         	condition1: 'downgrade',
         	condition2: 'true'
         },
     	'3'://First main priority: Room qty of Harvesters (what's wrong with you?)
         {
-        	type: 'harvester',
+        	type: 'harvester1',
         	qty: 'max',
         	condition1: 'etier1',
         	condition2: 'true'
@@ -701,7 +701,7 @@ var spawnDict =
     	'9'://Second main priority: Single Builder (to begin construction work ASAP)
         {
         	//(Miles note: This is only really a good idea if build code can be modified to start building stuff before spawner deactivates saving)
-        	type: 'builder',
+        	type: 'builder1',
         	qty: 1,
         	condition1: 'build',
         	condition2: 'true'
@@ -709,7 +709,7 @@ var spawnDict =
     	'10'://Third main priority: Handful of Upgraders (what's wrong with you?)
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
-        	type: 'upgrader',
+        	type: 'upgrader1',
         	qty: 5,
         	condition1: 'etier1',
         	condition2: 'true'
@@ -757,7 +757,7 @@ var spawnDict =
     	'16'://Fourth main priority: Handful of Builders (what's wrong with you?) (if there are construction sites or repairs needed)
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
-        	type: 'builder',
+        	type: 'builder1',
         	qty: 3,
         	condition1: 'build',
         	condition2: 'etier1'
