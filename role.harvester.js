@@ -101,6 +101,7 @@ var roleHarvester =
 	            if(targets.length > 0)
 	            {
 					var target_object = creep.pos.findClosestByPath(targets);
+					if (target_object == null) return;
 					creep.memory.target = target_object.id;
 					creep.memory.targetSet = true;
 				}
@@ -115,7 +116,11 @@ var roleHarvester =
 					return;
 				}
 				var current_target = Game.getObjectById(creep.memory.target);
-				if (current_target == null) return;
+				if (current_target == null) {
+				    creep.memory.target = null;
+				    creep.memory.targetSet = false;
+				    return;
+				}
 				if(current_target.energy == current_target.energyCapacity)
 				{
 					creep.memory.target = null;

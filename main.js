@@ -13,7 +13,7 @@ module.exports.loop = function ()
 	var myRooms = [];
 	for(var thisRoomind in Game.rooms)
 	{
-		if(Game.rooms[thisRoomind].controller.my) myRooms.push(Game.rooms[thisRoomind]);
+		if(Game.rooms[thisRoomind].controller && Game.rooms[thisRoomind].controller.my) myRooms.push(Game.rooms[thisRoomind]);
 	}
 	if (!Memory.creeps) {
 	    Memory.creeps ={};
@@ -60,8 +60,17 @@ module.exports.loop = function ()
 					//Fire at closest creep
 					if(closestHostile)
 					{
+					    if (!thisRoom.memory.alerted) {
+					        thisRoom.memory.alerted = true;
+					        Game.notify("Another fucking invader has spawned in room " + thisRoom.name);
+					    }
 						tower.attack(closestHostile);
 						continue;
+					}
+					
+					if (thisRoom.memory.alerted) {
+					    thisRoom.memory.alerted = false;
+					    Game.notify("The invader is dead, but you may want to check the status of your creeps.");
 					}
 					
 					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
@@ -104,7 +113,6 @@ module.exports.loop = function ()
 			    thisRoom.memory.buildSites = currSites.length;
 			}
 			
-
 			//Set variable array for all Spawns in room
 			var spawns = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
 			var spawnbusy = [false, false, false]; //Required so that spawn is only given one order per tick
@@ -112,12 +120,12 @@ module.exports.loop = function ()
 			var totalenergy = thisRoom.energyCapacityAvailable;
 			
 			//Begins the respawning code
-			for(var i = 1; i <= respawner.length; i++)
+			for(var i = 1; i <= respawner['clength']; i++)
 			{
 				//Gets the current creep in the dictionary of creeps
 				var current = respawner[i.toString()];
 				if (current.role == "builder") {
-					var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+					var targets = thisRoom.find(FIND_CONSTRUCTION_SITES);
 					if (targets.length == 0) continue;
 				}
 				var currentname = thisRoom.name + "-" + current.name;
