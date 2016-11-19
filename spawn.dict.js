@@ -6,44 +6,46 @@ var spawnDict =
         //Create a dictionary from this dictionary using the key of the room's controller level
         var roomDict = this[thisRoom.controller.level.toString()];
 
-        //Miles note: This originally was intended to be stored in thisroom.memory, although I've completely forgotten why. Consider moving it if necessary.
-        var harvesters = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester1');
+        //Miles note: This originally was intended to be stored in thisRoom.memory, although I've completely forgotten why. Consider moving it if necessary.
+        var harvesters = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'harvester1' && creep.room.name == thisRoom.name});
         var harvesterCt = harvesters.length;
-        var harvester2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester2');
+        var harvester2s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'harvester2' && creep.room.name == thisRoom.name});
         harvesterCt += harvester2s.length;
-        var harvester3s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester3');
+        var harvester3s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'harvester3' && creep.room.name == thisRoom.name});
         harvesterCt += harvester3s.length;
-        var harvester4s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester4');
+        var harvester4s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'harvester4' && creep.room.name == thisRoom.name});
         harvesterCt += harvester4s.length;
-        var harvester5s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester5');
+        var harvester5s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'harvester5' && creep.room.name == thisRoom.name});
         harvesterCt += harvester5s.length;
-        var harvester6s = _.filter(Game.creeps,(creep) => creep.memory.role == 'harvester6');
+        var harvester6s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'harvester6' && creep.room.name == thisRoom.name});
         harvesterCt += harvester6s.length;
+		
+		thisRoom.memory.harvesterCt = harvesterCt;
 
-        var upgraders = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader1');
+        var upgraders = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'upgrader1' && creep.room.name == thisRoom.name});
         var upgraderCt = upgraders.length;
-        var upgrader2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader2');
+        var upgrader2s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'upgrader2' && creep.room.name == thisRoom.name});
         upgraderCt += upgrader2s.length;
-        var upgrader3s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader3');
+        var upgrader3s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'upgrader3' && creep.room.name == thisRoom.name});
         upgraderCt += upgrader3s.length;
-        var upgrader4s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader4');
+        var upgrader4s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'upgrader4' && creep.room.name == thisRoom.name});
         upgraderCt += upgrader4s.length;
-        var upgrader5s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader5');
+        var upgrader5s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'upgrader5' && creep.room.name == thisRoom.name});
         upgraderCt += upgrader5s.length;
-        var upgrader6s = _.filter(Game.creeps,(creep) => creep.memory.role == 'upgrader6');
+        var upgrader6s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'upgrader6' && creep.room.name == thisRoom.name});
         upgraderCt += upgrader6s.length;
 
-        var builders = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder1');
+        var builders = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'builder1' && creep.room.name == thisRoom.name});
         var builderCt = builders.length;
-        var builder2s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder2');
+        var builder2s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'builder2' && creep.room.name == thisRoom.name});
         builderCt += builder2s.length;
-        var builder3s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder3');
+        var builder3s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'builder3' && creep.room.name == thisRoom.name});
         builderCt += builder3s.length;
-        var builder4s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder4');
+        var builder4s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'builder4' && creep.room.name == thisRoom.name});
         builderCt += builder4s.length;
-        var builder5s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder5');
+        var builder5s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'builder5' && creep.room.name == thisRoom.name});
         builderCt += builder5s.length;
-        var builder6s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder6');
+        var builder6s = _.filter(Game.creeps,(creep) => {return creep.memory.role == 'builder6' && creep.room.name == thisRoom.name});
         builderCt += builder6s.length;
 
         for(var i = 1;i < Object.keys(roomDict).length;i++)
@@ -294,7 +296,7 @@ var spawnDict =
         '1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
             type: 'harvester1',
-            qty: 3,
+            qty: 4,
             condition1: 'emergency',
             condition2: 'true'
         },
@@ -388,7 +390,7 @@ var spawnDict =
     	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
         	type: 'harvester1',
-        	qty: 3,
+        	qty: 4,
         	condition1: 'emergency',
         	condition2: 'true'
         },
@@ -505,7 +507,7 @@ var spawnDict =
     	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
         	type: 'harvester1',
-        	qty: 3,
+        	qty: 5,
         	condition1: 'emergency',
         	condition2: 'true'
         },
@@ -645,7 +647,7 @@ var spawnDict =
     	'1'://Emergency Harvester (placed at beginning to avoid Harvester2 cancellation of regular Harvester spawn)
         {
         	type: 'harvester1',
-        	qty: 3,
+        	qty: 5,
         	condition1: 'emergency',
         	condition2: 'true'
         },

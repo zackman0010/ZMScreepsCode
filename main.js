@@ -9,6 +9,18 @@ module.exports.loop = function ()
 {
 	var allylist = ["zackman0010", "SuperNerdMiles"];
 	
+	//Clear deceased creeps
+	for(var name in Memory.creeps) {
+        if(!Game.creeps[name]) {
+			if (Memory.creeps[name].role.substring(0, Memory.creeps[name].role.length - 1) == "harvester") {
+				if (Memory.creeps[name].collecting) {
+					Game.flags[Game.rooms[Memory.creeps[name].current_room].memory.sourceFlags[Memory.creeps[name].harvestingFrom]].memory.actHarvest--;
+				}
+			}
+            delete Memory.creeps[name];
+        }
+    }
+	
 	//Creates list of rooms we control for room update loop
 	var myRooms = [];
 	for(var thisRoomind in Game.rooms)
@@ -122,6 +134,7 @@ module.exports.loop = function ()
 
 			//Gets the current creep in the dictionary of creeps
 			var current = spawnDict.role(thisRoom, spawnDict.queue(thisRoom));
+			
 			if (current) {
 				var currentbody = current[0];
 				var currentmem = current[2];
@@ -164,9 +177,13 @@ module.exports.loop = function ()
 	for(var name in Game.creeps)
 	{
 		//For each creep in existence:
-		//Set variable creep for current creep
+		
+		//Set variable creep for current creep and its role
 		var creep = Game.creeps[name];
 		var role = creep.memory.role.substring(0, creep.memory.role.length - 1);
+		
+		//Set current room of creep
+		creep.memory.current_room = creep.room.name;
 		
 		if(role == 'harvester')
 		{
