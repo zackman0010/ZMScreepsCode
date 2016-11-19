@@ -1,5 +1,5 @@
 var respawner = {
-	'length': 35,
+	'clength': 35,
 	'1': {
 		type: 'harvester',
 		name: 'Harvester1',
