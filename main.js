@@ -1,16 +1,31 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleExternal = require('role.externalbuilder');
 var roomInit = require('room.init');
-var respawner = require('respawner');
+var spawnDict = require('spawn.dict');
 
 module.exports.loop = function ()
 {
+	var allylist = ["zackman0010", "SuperNerdMiles"];
+	
+	//Clear deceased creeps
+	for(var name in Memory.creeps) {
+        if(!Game.creeps[name]) {
+			if (Memory.creeps[name].role.substring(0, Memory.creeps[name].role.length - 1) == "harvester") {
+				if (Memory.creeps[name].collecting) {
+					Game.flags[Game.rooms[Memory.creeps[name].current_room].memory.sourceFlags[Memory.creeps[name].harvestingFrom]].memory.actHarvest--;
+				}
+			}
+            delete Memory.creeps[name];
+        }
+    }
+	
 	//Creates list of rooms we control for room update loop
 	var myRooms = [];
 	for(var thisRoomind in Game.rooms)
 	{
-		if(Game.rooms[thisRoomind].controller.my) myRooms.push(Game.rooms[thisRoomind]);
+		if(Game.rooms[thisRoomind].controller && Game.rooms[thisRoomind].controller.my) myRooms.push(Game.rooms[thisRoomind]);
 	}
 	if (!Memory.creeps) {
 	    Memory.creeps ={};
@@ -20,7 +35,6 @@ module.exports.loop = function ()
 		//Room update loop -- Runs only in rooms we control, makes sure all variables are properly set up
 		var thisRoom = myRooms[thisRoomind];
 		//If room has not been initialized, run the room initializer
-		//Miles note: Modify this once we fix code to run via room instead of a single spawner
 		if(!thisRoom.memory.initialized1) roomInit.first(thisRoom);
 		else if(thisRoom.memory.initialize2) roomInit.second(thisRoom);
 		else if(thisRoom.memory.initialized1 && !thisRoom.memory.initialize2)
@@ -46,11 +60,29 @@ module.exports.loop = function ()
 					var tower = towers[ind];
 					
 					//Set variable for closest hostile creep
-					var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+					var creepList = tower.room.find(FIND_CREEPS);
+					var hostileList = [];
+					for(var creepind in creepList) {
+						if (!allylist.includes(creepList[creepind].owner.username)) {
+							hostileList.push(creepList[creepind]);
+						}
+					}
+					
+					var closestHostile = tower.pos.findClosestByRange(hostileList);
 					//Fire at closest creep
 					if(closestHostile)
 					{
+					    if (!thisRoom.memory.alerted) {
+					        thisRoom.memory.alerted = true;
+					        Game.notify("Another fucking invader has spawned in room " + thisRoom.name);
+					    }
 						tower.attack(closestHostile);
+						continue;
+					}
+					
+					if (thisRoom.memory.alerted) {
+					    thisRoom.memory.alerted = false;
+					    Game.notify("The invader is dead, but you may want to check the status of your creeps.");
 					}
 					
 					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
@@ -64,83 +96,77 @@ module.exports.loop = function ()
 									(structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_RAMPART && structure.structureType != STRUCTURE_WALL && structure.structureType != STRUCTURE_ROAD))
 						}
 					});
+
+				    //If tower is sufficiently charged, attempt to repair ramparts and walls further than normal
+					if(tower.energy > 750)
+					{
+					    targets.push(tower.room.find(FIND_STRUCTURES,
+                            {
+                                filter: (structure) => {
+                                    return ((structure.structureType == STRUCTURE_RAMPART && structure.hits < 20000) ||
+                                            (structure.structureType == STRUCTURE_WALL && structure.hits < 20000))
+                                }
+                            }));
+					}
 					//Repair any targets
 					if(targets.length > 0)
 					{
 						tower.repair(targets[0]);
+						continue;
 					}
 				}
 			}
+
+			var currSites = [];
+			for(var sites in Game.constructionSites)
+			{
+			    var site = Game.constructionSites[sites];
+			    if(site.room == thisRoom) currSites.push(site);//If construction site is in current room, increment the number of sites within the room.
+			    thisRoom.memory.buildSites = currSites.length;
+			}
+			
 			//Set variable array for all Spawns in room
 			var spawns = thisRoom.find(FIND_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
 			var spawnbusy = [false, false, false]; //Required so that spawn is only given one order per tick
 			//Set variable for max energy in room (300 from each spawn, 50 from each extension)
 			var totalenergy = thisRoom.energyCapacityAvailable;
 			
-			//Begins the respawning code
-			for(var i = 1; i <= respawner.length; i++)
-			{
-				//Gets the current creep in the dictionary of creeps
-				var current = respawner[i.toString()];
-				if (current.role == "builder") {
-					var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-					if (targets.length == 0) continue;
-				}
-				if (!Game.creeps[current.name])
-				{
-					//If creep does not exist in game (Died or not created yet)
-					var creepmem = {};
-					//Check to prevent memory from being overwritten
-					if (!Memory.creeps[current.name]) {
-						creepmem = {role: current.type}; //Memory does not exist, set initial memory
+
+			//Gets the current creep in the dictionary of creeps
+			var current = spawnDict.role(thisRoom, spawnDict.queue(thisRoom));
+			
+			if (current) {
+				var currentbody = current[0];
+				var currentmem = current[2];
+				for (var spawnind in spawns) {
+					//Check each spawn in the room
+					var spawn = spawns[spawnind];
+					if (!spawnbusy[spawnind]) {
+						//Only try to spawn the creep if the spawn has not been given an order this tick
+						var result = spawn.createCreep(currentbody, null, currentmem);
 					} else {
-						creepmem = Memory.creeps[current.name]; //Memory does exist, do not overwrite memory
-						if (creepmem.harvestingFrom != null) Memory.flags[thisRoom.memory.sourceFlags[creepmem.harvestingFrom]].actHarvest--;
-						creepmem.harvestingFrom = null;
-						creepmem.collecting = false;
+						//If the spawn has been given an order this tick, prevent previous order from being overwritten
+						var result = ERR_BUSY;
 					}
-					if (totalenergy >= current.minenergy && totalenergy < current.maxenergy)
+					
+					if (result == ERR_NOT_ENOUGH_ENERGY)
 					{
-						//If energy in room is in acceptable range for creep
-						var breakloop = false;
-						var allbusy = false;
-						for (var spawnind in spawns) {
-							//Check each spawn in the room
-							var spawn = spawns[spawnind];
-							if (!spawnbusy[spawnind]) {
-								//Only try to spawn the creep if the spawn has not been given an order this tick
-								var result = spawn.createCreep(current.body, current.name, creepmem);
-							} else {
-								//If the spawn has been given an order this tick, prevent previous order from being overwritten
-								var result = ERR_BUSY;
-							}
-							
-							if (result == ERR_NOT_ENOUGH_ENERGY)
-							{
-								//If there is not enough energy to create a creep, then the entire creep loop needs to be broken out of
-								thisRoom.memory.saving = true;
-								allbusy = false
-								breakloop = true;
-								break;
-							} else if (result == ERR_BUSY) {
-								//If the spawn is busy, check the next spawn
-								allbusy = true;
-								continue;
-							} else {
-								//If the spawn successfully begins creating the creep, set appropriate variables to relect this
-								thisRoom.memory.saving = false;
-								spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
-								allbusy = false;
-								console.log(spawn.name + " is now creating " + current.name);
-								break;
-							}
-						}
-						if (breakloop || allbusy) {
-							//If not enough energy in the room or if all spawns are busy, break the creep loop
-							break;
-						}
+						//If there is not enough energy to create a creep, then the entire spawn loop needs to be broken out of
+						thisRoom.memory.saving = true;
+						break;
+					} else if (result == ERR_BUSY) {
+						//If the spawn is busy, check the next spawn
+						continue;
+					} else {
+						//If the spawn successfully begins creating the creep, set appropriate variables to reflect this
+						thisRoom.memory.saving = false;
+						spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
+						console.log(spawn.name + " is now creating " + result + " with the role " + currentmem.role);
+						break;
 					}
 				}
+			} else {
+				thisRoom.memory.saving = false;
 			}
 		}
 		else
@@ -153,23 +179,31 @@ module.exports.loop = function ()
 	for(var name in Game.creeps)
 	{
 		//For each creep in existence:
-		//Set variable creep for current creep
-		var creep = Game.creeps[name];
 		
-		if(creep.memory.role == 'harvester')
+		//Set variable creep for current creep and its role
+		var creep = Game.creeps[name];
+		var role = creep.memory.role.substring(0, creep.memory.role.length - 1);
+		
+		//Set current room of creep
+		creep.memory.current_room = creep.room.name;
+		
+		if(role == 'harvester')
 		{
 			//If creep is a Harvester or Big Harvester, run the Harvester role
 			roleHarvester.run(creep);
 		}
-		if(creep.memory.role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving))
+		if(role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && (creep.room.controller.level == 1 || creep.room.controller.ticksToDowngrade < 2000))))
 		{
-			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy, run the Upgrader role
+			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy OR the room is level 1 OR the room is about to downgrade, run the Upgrader role
 			roleUpgrader.run(creep);
 		}
-		if(creep.memory.role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
+		if(role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
 		{
 			//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
-			roleBuilder.run(creep);
+		    roleBuilder.run(creep);
+		}
+		if(role == 'externalbuilder') {
+		    roleExternal.run(creep);
 		}
 	}
 }

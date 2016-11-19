@@ -11,19 +11,19 @@ var roomInit =
 		for(var x = 0;x < sources.length;x++)
 		{
 			//For each energy source in room, create a flag and add it to the room memory array
-			var flagname = sources[x].pos.createFlag('SourceFlag' + x.toString());
+			var flagname = sources[x].pos.createFlag(thisRoom.name + '-SourceFlag' + x.toString());
 			if (flagname == -3)
 			{
 				//For some unknown reason, the above command is returning -3 (ERR_NAME_EXISTS) on every call. This workaround makes the rest of the code work.
-				flagname = 'SourceFlag' + x.toString();
+				flagname = thisRoom.name + '-SourceFlag' + x.toString();
 			}
 			thisRoom.memory.sourceFlags.push(flagname);
 		}
 		
 		//Set variable array within room memory for total tiles in room that can be harvested from
 		thisRoom.memory.totalHarvest = 0;
-		
-		
+		//Set variable within room memory for total construction sites in room
+		thisRoom.memory.buildSites = 0;
 		
 		//Once room is successfully initialized, set initialize flag so this code does not run again
 		thisRoom.memory.initialized1 = true;

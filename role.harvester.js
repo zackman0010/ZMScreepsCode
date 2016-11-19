@@ -45,44 +45,84 @@ var roleHarvester =
         }
         else
 		{
-			if (!creep.memory.targetSet) {
+	        if(!creep.memory.targetSet)
+	        {
 				//If the creep is not collecting energy:
-				//Find the closest spawn that is not yet full, then fill it
-				var targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
-					{return (structure.structureType == STRUCTURE_SPAWN && structure.energy < structure.energyCapacity)},
-					}
-				);
-				//If no spawns are found, find the closest extension and fill it
-				if (targets.length == 0) {
-					targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
-						{return (structure.structureType == STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity)},
-						}
-					);
+				//Find the closest spawn or extension that is not yet full
+	            var targets = creep.room.find(FIND_STRUCTURES,
+                    {
+                        filter: (structure) =>
+				        {
+                            return ((structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION) && structure.energy < structure.energyCapacity)
+				        },
+					});
+				//If targets are found, find target links and add them to the list
+	            if(targets.length > 0)
+	            {
+	                if(creep.room.memory.sendLink1 != null)
+	                {
+	                    var sendLinkA = Game.getObjectById(creep.room.memory.sendLink1);
+	                    if(sendLinkA.energy < sendLinkA.energyCapacity) targets.push(sendLinkA);
+	                }
+	                if(creep.room.memory.sendLink2 != null)
+	                {
+	                    var sendLinkB = Game.getObjectById(creep.room.memory.sendLink2);
+	                    if(sendLinkB.energy < sendLinkB.energyCapacity) targets.push(sendLinkB);
+	                }
+	                if(creep.room.memory.sendLink3 != null)
+	                {
+	                    var sendLinkC = Game.getObjectById(creep.room.memory.sendLink3);
+	                    if(sendLinkC.energy < sendLinkC.energyCapacity) targets.push(sendLinkC);
+	                }
+	                if(creep.room.memory.sendLink4 != null)
+	                {
+	                    var sendLinkD = Game.getObjectById(creep.room.memory.sendLink4);
+	                    if(sendLinkD.energy < sendLinkD.energyCapacity) targets.push(sendLinkD);
+	                }
+	                if(creep.room.memory.sendLink5 != null)
+	                {
+	                    var sendLinkE = Game.getObjectById(creep.room.memory.sendLink5);
+	                    if(sendLinkE.energy < sendLinkE.energyCapacity) targets.push(sendLinkE);
+	                }
 				}
-				//If no extensions are found, find the closest tower and fill it
-				if (targets.length == 0) {
-					targets = creep.room.find(FIND_STRUCTURES, {filter: (structure) =>
-						{return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity)},
-						}
-					);
+				//If no spawns or extensions need energy, find the closest tower
+	            if(targets.length == 0)
+	            {
+	                targets = creep.room.find(FIND_STRUCTURES,
+                        {
+                            filter: (structure) =>
+                            {
+                                return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity)
+                            },
+						});
 				}
 				
-				//Set the current target of the creep
-				if (targets.length > 0) {
+				//Find the closest target among the list of targets and set it as the creep's current target
+	            if(targets.length > 0)
+	            {
 					var target_object = creep.pos.findClosestByPath(targets);
 					if (target_object == null) return;
 					creep.memory.target = target_object.id;
 					creep.memory.targetSet = true;
 				}
-			} else {
+	        }
+
+	        else
+	        {
 				//If the target was filled by something else, delete the target
-				if (creep.memory.target == null) {
+	            if(creep.memory.target == null)
+	            {
 					creep.memory.targetSet = false;
 					return;
 				}
 				var current_target = Game.getObjectById(creep.memory.target);
-				if (current_target == null) return;
-				if (current_target.energy == current_target.energyCapacity) {
+				if (current_target == null) {
+				    creep.memory.target = null;
+				    creep.memory.targetSet = false;
+				    return;
+				}
+				if(current_target.energy == current_target.energyCapacity)
+				{
 					creep.memory.target = null;
 					creep.memory.targetSet = false;
 					return;
