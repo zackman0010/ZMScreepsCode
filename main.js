@@ -161,10 +161,12 @@ module.exports.loop = function ()
 						//If the spawn successfully begins creating the creep, set appropriate variables to reflect this
 						thisRoom.memory.saving = false;
 						spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
-						console.log(spawn.name + " is now creating " + result);
+						console.log(spawn.name + " is now creating " + result + " with the role " + currentmem.role);
 						break;
 					}
 				}
+			} else {
+				thisRoom.memory.saving = false;
 			}
 		}
 		else
