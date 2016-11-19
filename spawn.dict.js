@@ -1,4 +1,4 @@
-﻿var spawnDict =
+var spawnDict =
 {
     'queue': function(thisRoom)
     {
@@ -46,16 +46,19 @@
         var builder6s = _.filter(Game.creeps,(creep) => creep.memory.role == 'builder6');
         builderCt += builder6s.length;
 
-        for(var i = 1;i < roomDict.length;i++)
+        for(var i = 1;i < Object.keys(roomDict).length;i++)
         {
             var current = roomDict[i.toString()];
             var role = current.type;
             var max = current.qty;
+			if (max == 'max') max = thisRoom.memory.totalHarvest;
             var condition1 = this.condList(thisRoom,current.condition1);
             var condition2 = this.condList(thisRoom,current.condition2);
             switch(role)
             {
                 case 'harvester':
+                    if(harvesterCt < max && condition1 && condition2) return role;
+            		break;
                 case 'harvester2':
             	case 'harvester3':
             	case 'harvester4':
@@ -80,10 +83,10 @@
             		if(builderCt < max && condition1 && condition2) return role;
             		break;
             	default:
-            		return 'null';
                     break;
             }
         }
+        return null;
 
     },
     'condList': function(thisRoom,condition)
@@ -211,7 +214,7 @@
         '3'://Third and final priority: Harvesters until maxed or RCL upgrade
         {
             type: 'harvester',
-            qty: thisRoom.memory.totalHarvest,
+            qty: 'max',
             condition1: 'true',
             condition2: 'true'
         }
@@ -235,14 +238,14 @@
         '3'://First main priority: Room qty of Harvesters (if RCL2 extensions not finished)
         {
             type: 'harvester',
-            qty: thisRoom.memory.totalHarvest,
+            qty: 'max',
             condition1: 'etier1',
             condition2: 'true'
         },
         '4'://First main priority: Room qty of Harvester2s (if RCL2 extensions finished)
         {
             type: 'harvester2',
-            qty: thisRoom.memory.totalHarvest,
+            qty: 'max',
             condition1: 'etier2',
             condition2: 'true'
         },
@@ -305,21 +308,21 @@
         '3'://First main priority: Room qty of Harvesters (if RCL2 extensions somehow not finished)
         {
             type: 'harvester',
-            qty: thisRoom.memory.totalHarvest,
+            qty: 'max',
             condition1: 'etier1',
             condition2: 'true'
         },
         '4'://First main priority: Room qty of Harvester2s (if RCL2 extensions finished but not RCL3 extensions)
         {
             type: 'harvester2',
-            qty: thisRoom.memory.totalHarvest,
+            qty: 'max',
             condition1: 'etier2',
             condition2: 'true'
         },
         '5'://First main priority: Room qty of Harvester3s (if RCL3 extensions finished)
         {
             type: 'harvester3',
-            qty: thisRoom.memory.totalHarvest,
+            qty: 'max',
             condition1: 'etier3',
             condition2: 'true'
         },
@@ -399,28 +402,28 @@
     	'3'://First main priority: Room qty of Harvesters (why are RCL2 extensions not finished yet?)
         {
         	type: 'harvester',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier1',
         	condition2: 'true'
         },
     	'4'://First main priority: Room qty of Harvester2s (if RCL2 extensions finished but somehow not RCL3 extensions)
         {
         	type: 'harvester2',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier2',
         	condition2: 'true'
         },
     	'5'://First main priority: Room qty of Harvester3s (if RCL3 extensions finished but not RCL4 extensions)
         {
         	type: 'harvester3',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier3',
         	condition2: 'true'
         },
     	'6'://First main priority: Room qty of Harvester4s (if RCL4 extensions finished)
         {
         	type: 'harvester4',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier4',
         	condition2: 'true'
         },
@@ -516,35 +519,35 @@
     	'3'://First main priority: Room qty of Harvesters (what's wrong with you?)
         {
         	type: 'harvester',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier1',
         	condition2: 'true'
         },
     	'4'://First main priority: Room qty of Harvester2s (are RCL3 extensions seriously not done yet?)
         {
         	type: 'harvester2',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier2',
         	condition2: 'true'
         },
     	'5'://First main priority: Room qty of Harvester3s (if RCL3 extensions finished but somehow not RCL4 extensions)
         {
         	type: 'harvester3',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier3',
         	condition2: 'true'
         },
     	'6'://First main priority: Room qty of Harvester4s (if RCL4 extensions finished but not RCL5 extensions)
         {
         	type: 'harvester4',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier4',
         	condition2: 'true'
         },
     	'7'://First main priority: Room qty of Harvester5s (if RCL5 extensions finished)
         {
         	type: 'harvester5',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier5',
         	condition2: 'true'
         },
@@ -656,42 +659,42 @@
     	'3'://First main priority: Room qty of Harvesters (what's wrong with you?)
         {
         	type: 'harvester',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier1',
         	condition2: 'true'
         },
     	'4'://First main priority: Room qty of Harvester2s (you must have been wiped if these are still spawning)
         {
         	type: 'harvester2',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier2',
         	condition2: 'true'
         },
     	'5'://First main priority: Room qty of Harvester3s (RCL4 extensions aren't even done yet?)
         {
         	type: 'harvester3',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier3',
         	condition2: 'true'
         },
     	'6'://First main priority: Room qty of Harvester4s (if RCL4 extensions finished but somehow not RCL5 extensions)
         {
         	type: 'harvester4',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier4',
         	condition2: 'true'
         },
     	'7'://First main priority: Room qty of Harvester5s (if RCL5 extensions finished but not RCL6 extensions)
         {
         	type: 'harvester5',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier5',
         	condition2: 'true'
         },
     	'8'://First main priority: Room qty of Harvester6s (if RCL6 extensions finished)
         {
         	type: 'harvester6',
-        	qty: thisRoom.memory.totalHarvest,
+        	qty: 'max',
         	condition1: 'etier6',
         	condition2: 'true'
         },
@@ -801,3 +804,5 @@
 		}
     }
 }
+
+module.exports = spawnDict;

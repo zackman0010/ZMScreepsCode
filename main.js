@@ -3,7 +3,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleExternal = require('role.externalbuilder');
 var roomInit = require('room.init');
-var respawner = require('respawner');
+var spawnDict = require('spawn.dict');
 
 module.exports.loop = function ()
 {
@@ -105,10 +105,10 @@ module.exports.loop = function ()
 				}
 			}
 
-			var currSites;
-			for(var sites in Game.constructionSites.ConstructionSite)
+			var currSites = [];
+			for(var sites in Game.constructionSites)
 			{
-			    var site = Game.constructionSites.ConstructionSite[sites];
+			    var site = Game.constructionSites[sites];
 			    if(site.room == thisRoom) currSites.push(site);//If construction site is in current room, increment the number of sites within the room.
 			    thisRoom.memory.buildSites = currSites.length;
 			}
@@ -119,69 +119,37 @@ module.exports.loop = function ()
 			//Set variable for max energy in room (300 from each spawn, 50 from each extension)
 			var totalenergy = thisRoom.energyCapacityAvailable;
 			
-			//Begins the respawning code
-			for(var i = 1; i <= respawner['clength']; i++)
-			{
-				//Gets the current creep in the dictionary of creeps
-				var current = respawner[i.toString()];
-				if (current.role == "builder") {
-					var targets = thisRoom.find(FIND_CONSTRUCTION_SITES);
-					if (targets.length == 0) continue;
-				}
-				var currentname = thisRoom.name + "-" + current.name;
-				if (!Game.creeps[currentname])
-				{
-					//If creep does not exist in game (Died or not created yet)
-					var creepmem = {};
-					//Check to prevent memory from being overwritten
-					if (!Memory.creeps[currentname]) {
-						creepmem = {role: current.type, homeroom: thisRoom.name}; //Memory does not exist, set initial memory
+
+			//Gets the current creep in the dictionary of creeps
+			var current = spawnDict.role(thisRoom, spawnDict.queue(thisRoom));
+			if (current) {
+				var currentbody = current[0];
+				var currentmem = current[2];
+				for (var spawnind in spawns) {
+					//Check each spawn in the room
+					var spawn = spawns[spawnind];
+					if (!spawnbusy[spawnind]) {
+						//Only try to spawn the creep if the spawn has not been given an order this tick
+						var result = spawn.createCreep(currentbody, null, currentmem);
 					} else {
-						creepmem = Memory.creeps[currentname]; //Memory does exist, do not overwrite memory
-						if (creepmem.harvestingFrom != null) Memory.flags[thisRoom.memory.sourceFlags[creepmem.harvestingFrom]].actHarvest--;
-						creepmem.harvestingFrom = null;
-						creepmem.collecting = false;
+						//If the spawn has been given an order this tick, prevent previous order from being overwritten
+						var result = ERR_BUSY;
 					}
-					if (totalenergy >= current.minenergy && totalenergy < current.maxenergy)
+					
+					if (result == ERR_NOT_ENOUGH_ENERGY)
 					{
-						//If energy in room is in acceptable range for creep
-						var breakloop = false;
-						var allbusy = false;
-						for (var spawnind in spawns) {
-							//Check each spawn in the room
-							var spawn = spawns[spawnind];
-							if (!spawnbusy[spawnind]) {
-								//Only try to spawn the creep if the spawn has not been given an order this tick
-								var result = spawn.createCreep(current.body, currentname, creepmem);
-							} else {
-								//If the spawn has been given an order this tick, prevent previous order from being overwritten
-								var result = ERR_BUSY;
-							}
-							
-							if (result == ERR_NOT_ENOUGH_ENERGY)
-							{
-								//If there is not enough energy to create a creep, then the entire creep loop needs to be broken out of
-								thisRoom.memory.saving = true;
-								allbusy = false
-								breakloop = true;
-								break;
-							} else if (result == ERR_BUSY) {
-								//If the spawn is busy, check the next spawn
-								allbusy = true;
-								continue;
-							} else {
-								//If the spawn successfully begins creating the creep, set appropriate variables to relect this
-								thisRoom.memory.saving = false;
-								spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
-								allbusy = false;
-								console.log(spawn.name + " is now creating " + currentname);
-								break;
-							}
-						}
-						if (breakloop || allbusy) {
-							//If not enough energy in the room or if all spawns are busy, break the creep loop
-							break;
-						}
+						//If there is not enough energy to create a creep, then the entire spawn loop needs to be broken out of
+						thisRoom.memory.saving = true;
+						break;
+					} else if (result == ERR_BUSY) {
+						//If the spawn is busy, check the next spawn
+						continue;
+					} else {
+						//If the spawn successfully begins creating the creep, set appropriate variables to reflect this
+						thisRoom.memory.saving = false;
+						spawnbusy[spawnind] = true; //Spawn has been given command this tick, do not overwrite command
+						console.log(spawn.name + " is now creating " + result);
+						break;
 					}
 				}
 			}
