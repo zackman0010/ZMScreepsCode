@@ -158,41 +158,29 @@ var spawnDict =
 				return [[WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'harvester6'}];
 				break;
             case 'upgrader1'://Energy cost: 250 (etier1)
+			case 'upgrader2':
                 return [[WORK,CARRY,MOVE,MOVE],null,{role: 'upgrader1'}];
                 break;
-            case 'upgrader2'://Energy cost: 500 (etier2)
+            case 'upgrader3'://Energy cost: 500 (etier2)
+			case 'upgrader4':
                 return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader2'}];
                 break;
-            case 'upgrader3'://Energy cost: 750 (etier3)
+            case 'upgrader5'://Energy cost: 750 (etier3)
+			case 'upgrader6':
                 return [[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader3'}];
                 break;
-        	case 'upgrader4'://Energy cost: 1000 (etier4)
-				return [[WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader4'}];
-				break;
-        	case 'upgrader5'://Energy cost: 1250 (etier4)
-				return [[WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader5'}];
-				break;
-        	case 'upgrader6'://Energy cost: 1500 (etier5)
-				return [[WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'upgrader6'}];
-				break;
             case 'builder1'://Energy cost: 250 (etier1)
+			case 'builder2':
                 return [[WORK,CARRY,MOVE,MOVE],null,{role: 'builder1'}];
                 break;
-            case 'builder2'://Energy cost: 500 (etier2)
+            case 'builder3'://Energy cost: 500 (etier2)
+			case 'builder4':
                 return [[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE],null,{role: 'builder2'}];
                 break;
-            case 'builder3'://Energy cost: 750 (etier3)
+            case 'builder5'://Energy cost: 750 (etier3)
+			case 'builder6':
                 return [[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{role: 'builder3'}];
                 break;
-        	case 'builder4'://Energy cost: 1000 (etier4)
-        		return [[WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{ role: 'builder4' }];
-        		break;
-        	case 'builder5'://Energy cost: 1250 (etier4)
-        		return [[WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{ role: 'builder5' }];
-        		break;
-        	case 'builder6'://Energy cost: 1500 (etier5)
-        		return [[WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE],null,{ role: 'builder6' }];
-        		break;
             default:
                 break;
         }
@@ -263,14 +251,14 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
             type: 'upgrader1',
-            qty: 5,
+            qty: 2,
             condition1: 'etier1',
             condition2: 'true'
         },
         '7'://Third main priority: Handful of Upgrader2s (if RCL2 extensions finished)
         {
             type: 'upgrader2',
-            qty: 5,
+            qty: 2,
             condition1: 'etier2',
             condition2: 'true'
         },
@@ -278,7 +266,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
             type: 'builder1',
-            qty: 3,
+            qty: 1,
             condition1: 'build',
             condition2: 'etier1'
         },
@@ -286,7 +274,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
             type: 'builder2',
-            qty: 3,
+            qty: 1,
             condition1: 'build',
             condition2: 'etier2'
         }
@@ -340,7 +328,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
             type: 'upgrader1',
-            qty: 5,
+            qty: 2,
             condition1: 'etier1',
             condition2: 'true'
         },
@@ -348,7 +336,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
             type: 'upgrader2',
-            qty: 5,
+            qty: 2,
             condition1: 'etier2',
             condition2: 'true'
         },
@@ -356,7 +344,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
             type: 'upgrader3',
-            qty: 5,
+            qty: 2,
             condition1: 'etier3',
             condition2: 'true'
         },
@@ -364,7 +352,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
             type: 'builder1',
-            qty: 3,
+            qty: 1,
             condition1: 'build',
             condition2: 'etier1'
         },
@@ -372,7 +360,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
             type: 'builder2',
-            qty: 3,
+            qty: 1,
             condition1: 'build',
             condition2: 'etier2'
         },
@@ -380,7 +368,7 @@ var spawnDict =
         {
             //(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
             type: 'builder3',
-            qty: 3,
+            qty: 1,
             condition1: 'build',
             condition2: 'etier3'
         }
@@ -441,7 +429,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader1',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier1',
         	condition2: 'true'
         },
@@ -449,7 +437,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader2',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier2',
         	condition2: 'true'
         },
@@ -457,7 +445,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader3',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier3',
         	condition2: 'true'
         },
@@ -465,7 +453,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader4',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier4',
         	condition2: 'true'
         },
@@ -473,7 +461,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder1',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier1'
         },
@@ -481,7 +469,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder2',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier2'
         },
@@ -489,7 +477,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder3',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier3'
         },
@@ -497,7 +485,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder4',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier4'
         }
@@ -565,7 +553,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader1',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier1',
         	condition2: 'true'
         },
@@ -573,7 +561,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader2',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier2',
         	condition2: 'true'
         },
@@ -581,7 +569,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader3',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier3',
         	condition2: 'true'
         },
@@ -589,7 +577,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader4',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier4',
         	condition2: 'true'
         },
@@ -597,7 +585,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader5',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier5',
         	condition2: 'true'
         },
@@ -605,7 +593,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder1',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier1'
         },
@@ -613,7 +601,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder2',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier2'
         },
@@ -621,7 +609,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder3',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier3'
         },
@@ -629,7 +617,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder4',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier4'
         },
@@ -637,7 +625,7 @@ var spawnDict =
 		{
 			//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
 			type: 'builder5',
-			qty: 3,
+			qty: 1,
 			condition1: 'build',
 			condition2: 'etier5'
 		}
@@ -712,7 +700,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader1',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier1',
         	condition2: 'true'
         },
@@ -720,7 +708,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader2',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier2',
         	condition2: 'true'
         },
@@ -728,7 +716,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader3',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier3',
         	condition2: 'true'
         },
@@ -736,7 +724,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader4',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier4',
         	condition2: 'true'
         },
@@ -744,7 +732,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader5',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier5',
         	condition2: 'true'
         },
@@ -752,7 +740,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. May want to detect max number of locations that upgraders can upgrade from.)
         	type: 'upgrader6',
-        	qty: 5,
+        	qty: 2,
         	condition1: 'etier6',
         	condition2: 'true'
         },
@@ -760,7 +748,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder1',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier1'
         },
@@ -768,7 +756,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder2',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier2'
         },
@@ -776,7 +764,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder3',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier3'
         },
@@ -784,7 +772,7 @@ var spawnDict =
         {
         	//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
         	type: 'builder4',
-        	qty: 3,
+        	qty: 1,
         	condition1: 'build',
         	condition2: 'etier4'
         },
@@ -792,7 +780,7 @@ var spawnDict =
 		{
 			//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
 			type: 'builder5',
-			qty: 3,
+			qty: 1,
 			condition1: 'build',
 			condition2: 'etier5'
 		},
@@ -800,7 +788,7 @@ var spawnDict =
 		{
 			//(Miles note: Argue about exact number later. Sounds like more than 1 is overkill.)
 			type: 'builder6',
-			qty: 3,
+			qty: 1,
 			condition1: 'build',
 			condition2: 'etier6'
 		}

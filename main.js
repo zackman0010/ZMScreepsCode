@@ -74,7 +74,7 @@ module.exports.loop = function ()
 					{
 					    if (!thisRoom.memory.alerted) {
 					        thisRoom.memory.alerted = true;
-					        Game.notify("Another fucking invader has spawned in room " + thisRoom.name);
+					        //Game.notify("Another fucking invader has spawned in room " + thisRoom.name);
 					    }
 						tower.attack(closestHostile);
 						continue;
@@ -82,7 +82,7 @@ module.exports.loop = function ()
 					
 					if (thisRoom.memory.alerted) {
 					    thisRoom.memory.alerted = false;
-					    Game.notify("The invader is dead, but you may want to check the status of your creeps.");
+					    //Game.notify("The invader is dead, but you may want to check the status of your creeps.");
 					}
 					
 					//Set variable array for targets to heal (Ramparts or walls with less than 10,000 health; any other structures with less than max health)
@@ -175,6 +175,62 @@ module.exports.loop = function ()
 			break;
 		}
 	}
+	
+	//Begin harvester role logic block
+	//Determines if the 'harvester' role acts as a miner, builder, or upgrader (in that order)
+	//Find the closest spawn or extension that is not yet full
+	var harvestrole;
+	var targets = creep.room.find(FIND_STRUCTURES, {
+			filter: (structure) => {
+				return ((structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION) && structure.energy < structure.energyCapacity)}
+	});
+	//If targets are found, find target links and add them to the list
+	if(targets.length > 0)
+	{
+		if(creep.room.memory.sendLink1 != null)
+		{
+			var sendLinkA = Game.getObjectById(creep.room.memory.sendLink1);
+			if(sendLinkA.energy < sendLinkA.energyCapacity) targets.push(sendLinkA);
+		}
+		if(creep.room.memory.sendLink2 != null)
+		{
+			var sendLinkB = Game.getObjectById(creep.room.memory.sendLink2);
+			if(sendLinkB.energy < sendLinkB.energyCapacity) targets.push(sendLinkB);
+		}
+		if(creep.room.memory.sendLink3 != null)
+		{
+			var sendLinkC = Game.getObjectById(creep.room.memory.sendLink3);
+			if(sendLinkC.energy < sendLinkC.energyCapacity) targets.push(sendLinkC);
+		}
+		if(creep.room.memory.sendLink4 != null)
+		{
+			var sendLinkD = Game.getObjectById(creep.room.memory.sendLink4);
+			if(sendLinkD.energy < sendLinkD.energyCapacity) targets.push(sendLinkD);
+		}
+		if(creep.room.memory.sendLink5 != null)
+		{
+			var sendLinkE = Game.getObjectById(creep.room.memory.sendLink5);
+			if(sendLinkE.energy < sendLinkE.energyCapacity) targets.push(sendLinkE);
+		}
+	}
+	//If no spawns or extensions need energy, find the closest tower
+	if(targets.length == 0)
+	{
+		targets = creep.room.find(FIND_STRUCTURES,
+			{
+				filter: (structure) =>
+				{
+					return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity)
+				},
+			});
+	}
+	if (targets.length != 0) harvestrole = "harvester";
+	else {
+		var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+		if (targets.length != 0) harvestrole = "builder";
+		else harvestrole = "upgrader";
+	}
+	
 	//Creep Control Loop
 	for(var name in Game.creeps)
 	{
@@ -190,13 +246,15 @@ module.exports.loop = function ()
 		if(role == 'harvester')
 		{
 			//If creep is a Harvester or Big Harvester, run the Harvester role
-			roleHarvester.run(creep);
+			if (harvestrole == "harvester") roleHarvester.run(creep, targets);
+			else if (harvestrole == "builder") roleBuilder.run(creep);
+			else roleUpgrader.run(creep);
 		}
 		if(role == 'upgrader' && (creep.memory.upgrading || !creep.room.memory.saving || (creep.room.controller.my && (creep.room.controller.level == 1 || creep.room.controller.ticksToDowngrade < 2000))))
 		{
 			//If creep is an Upgrader AND the room is not saving OR the creep has stored energy OR the room is level 1 OR the room is about to downgrade, run the Upgrader role
 			roleUpgrader.run(creep);
-		}
+		} else if (role == 'upgrader') creep.moveTo(creep.room.controller);
 		if(role == 'builder' && (creep.memory.building || !creep.room.memory.saving))
 		{
 			//If creep is a Builder AND the room is not saving OR the creep has stored energy, run the Builder role
